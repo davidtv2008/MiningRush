@@ -1,36 +1,49 @@
 """
-Load a Tiled map file
+Load a map stored in csv format, as exported by the program 'Tiled.'
 
 Artwork from: http://kenney.nl
 Tiled available from: http://www.mapeditor.org/
 
 If Python and Arcade are installed, this example can be run from the command line with:
-python -m arcade.examples.sprite_tiled_map
+python -m arcade.examples.sprite_csv_map
 """
 
 import arcade
 import os
-import time
 
 SPRITE_SCALING = 0.5
 
 SCREEN_WIDTH = 800
 SCREEN_HEIGHT = 600
-SCREEN_TITLE = "Sprite Tiled Map Example"
+SCREEN_TITLE = "Sprite CSV Map Example"
 SPRITE_PIXEL_SIZE = 128
 GRID_PIXEL_SIZE = (SPRITE_PIXEL_SIZE * SPRITE_SCALING)
 
 # How many pixels to keep as a minimum margin between the character
 # and the edge of the screen.
-VIEWPORT_MARGIN_TOP = 60
-VIEWPORT_MARGIN_BOTTOM = 60
-VIEWPORT_RIGHT_MARGIN = 270
-VIEWPORT_LEFT_MARGIN = 270
+VIEWPORT_MARGIN = 0
+RIGHT_MARGIN = 0
 
 # Physics
 MOVEMENT_SPEED = 5
-JUMP_SPEED = 23
-GRAVITY = 1.1
+JUMP_SPEED = 14
+GRAVITY = 0.5
+
+
+def get_map(filename):
+    """
+    This function loads an array based on a map stored as a list of
+    numbers separated by commas.
+    """
+    map_file = open(filename)
+    map_array = []
+    for line in map_file:
+        line = line.strip()
+        map_row = line.split(",")
+        for index, item in enumerate(map_row):
+            map_row[index] = int(item)
+        map_array.append(map_row)
+    return map_array
 
 
 class MyGame(arcade.Window):
@@ -52,26 +65,21 @@ class MyGame(arcade.Window):
         # Sprite lists
         self.wall_list = None
         self.player_list = None
-        self.gold_list = None
 
         # Set up the player
-        self.score = 0
         self.player_sprite = None
 
         self.physics_engine = None
         self.view_left = 0
         self.view_bottom = 0
         self.game_over = False
-        self.last_time = None
-        self.frame_count = 0
-        self.fps_message = None
 
     def setup(self):
         """ Set up the game and initialize the variables. """
 
         # Sprite lists
         self.player_list = arcade.SpriteList()
-        self.gold_list = arcade.SpriteList()
+        self.wall_list = arcade.SpriteList()
 
         # Set up the player
         self.player_sprite = arcade.Sprite("graphics/adventurer/adventurer_stand.png", SPRITE_SCALING)
@@ -80,36 +88,38 @@ class MyGame(arcade.Window):
         self.player_sprite.center_x = 64
         self.player_sprite.center_y = 270
         self.player_list.append(self.player_sprite)
-        
-        platforms_layer_name = 'Platforms'
-        gold_layer_name = 'Gold'
-        map_name = "testmap.tmx"
 
-        # Read in the tiled map
-        my_map = arcade.read_tiled_map(map_name, SPRITE_SCALING)
+        # Get a 2D array made of numbers based on the map
+        map_array = get_map("gold_map.csv")
 
-        # --- Walls ---
-        # Grab the layer of items we can't move through
-        map_array = my_map.layers_int_data[platforms_layer_name]
-
-        # Calculate the right edge of the my_map in pixels
+        # Right edge of the map in pixels
         self.end_of_map = len(map_array[0]) * GRID_PIXEL_SIZE
 
-        # --- Platforms ---
-        self.wall_list = arcade.generate_sprites(my_map, platforms_layer_name, SPRITE_SCALING)
+        for row_index, row in enumerate(map_array):
+            for column_index, item in enumerate(row):
 
-        # --- Gold ---
-        self.gold_list = arcade.generate_sprites(my_map, gold_layer_name, SPRITE_SCALING)
+                # For this map, the numbers represent:
+                # -1 = empty
+                # 0  = box
+                # 1  = grass left edge
+                # 2  = grass middle
+                # 3  = grass right edge
+                if item == -1:
+                    continue
+                elif item == 32:
+                    wall = arcade.Sprite("graphics/tiles/dirt.png", SPRITE_SCALING)
 
-        # --- Other stuff
+                wall.right = column_index * 64
+                wall.top = (7 - row_index) * 64
+                self.wall_list.append(wall)
+
+        self.physics_engine = \
+            arcade.PhysicsEnginePlatformer(self.player_sprite,
+                                           self.wall_list,
+                                           gravity_constant=GRAVITY)
+
         # Set the background color
-        arcade.set_background_color(arcade.color.AMAZON)
-
-        # Keep player from running through the wall_list layer
-        self.physics_engine = arcade.PhysicsEnginePlatformer(self.player_sprite,
-                                                             self.wall_list,
-                                                             gravity_constant=GRAVITY)
-
+        arcade.set_background_color(arcade.color.BLACK)
 
         # Set the view port boundaries
         # These numbers set where we have 'scrolled' to.
@@ -123,35 +133,22 @@ class MyGame(arcade.Window):
         Render the screen.
         """
 
-        self.frame_count += 1
-
         # This command has to happen before we start drawing
         arcade.start_render()
 
         # Draw all the sprites.
         self.player_list.draw()
         self.wall_list.draw()
-        self.gold_list.draw()
-
-        if self.last_time and self.frame_count % 60 == 0:
-            fps = 1.0 / (time.time() - self.last_time) * 60
-            self.fps_message = f"FPS: {fps:5.0f}"
-
-        if self.fps_message:
-            arcade.draw_text(self.fps_message, self.view_left + 10, self.view_bottom + 40, arcade.color.BLACK, 14)
-
-        if self.frame_count % 60 == 0:
-            self.last_time = time.time()
 
         # Put the text on the screen.
         # Adjust the text position based on the view port so that we don't
         # scroll the text too.
         distance = self.player_sprite.right
         output = f"Distance: {distance}"
-        arcade.draw_text(output, self.view_left + 10, self.view_bottom + 20, arcade.color.BLACK, 14)
+        arcade.draw_text(output, self.view_left + 10, self.view_bottom + 20, arcade.color.WHITE, 14)
 
         if self.game_over:
-            arcade.draw_text("Game Over", self.view_left + 200, self.view_bottom + 200, arcade.color.BLACK, 30)
+            arcade.draw_text("Game Over", self.view_left + 200, self.view_bottom + 200, arcade.color.WHITE, 30)
 
     def on_key_press(self, key, modifiers):
         """
@@ -183,11 +180,6 @@ class MyGame(arcade.Window):
         if not self.game_over:
             self.physics_engine.update()
 
-        gold_hit = arcade.check_for_collision_with_list(self.player_sprite, self.gold_list)
-        for gold in gold_hit:
-            gold.kill()
-            self.score += 1
-
         # --- Manage Scrolling ---
 
         # Track if we need to change the view port
@@ -195,33 +187,31 @@ class MyGame(arcade.Window):
         changed = False
 
         # Scroll left
-        left_bndry = self.view_left + VIEWPORT_LEFT_MARGIN
+        left_bndry = self.view_left + VIEWPORT_MARGIN
         if self.player_sprite.left < left_bndry:
             self.view_left -= left_bndry - self.player_sprite.left
             changed = True
 
         # Scroll right
-        right_bndry = self.view_left + SCREEN_WIDTH - VIEWPORT_RIGHT_MARGIN
+        right_bndry = self.view_left + SCREEN_WIDTH - RIGHT_MARGIN
         if self.player_sprite.right > right_bndry:
             self.view_left += self.player_sprite.right - right_bndry
             changed = True
 
         # Scroll up
-        top_bndry = self.view_bottom + SCREEN_HEIGHT - VIEWPORT_MARGIN_TOP
+        top_bndry = self.view_bottom + SCREEN_HEIGHT - VIEWPORT_MARGIN
         if self.player_sprite.top > top_bndry:
             self.view_bottom += self.player_sprite.top - top_bndry
             changed = True
 
         # Scroll down
-        bottom_bndry = self.view_bottom + VIEWPORT_MARGIN_BOTTOM
+        bottom_bndry = self.view_bottom + VIEWPORT_MARGIN
         if self.player_sprite.bottom < bottom_bndry:
             self.view_bottom -= bottom_bndry - self.player_sprite.bottom
             changed = True
 
         # If we need to scroll, go ahead and do it.
         if changed:
-            self.view_left = int(self.view_left)
-            self.view_bottom = int(self.view_bottom)
             arcade.set_viewport(self.view_left,
                                 SCREEN_WIDTH + self.view_left,
                                 self.view_bottom,
