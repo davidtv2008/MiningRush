@@ -10,19 +10,21 @@ python -m arcade.examples.sprite_csv_map
 
 import arcade
 import os
+import random
 
 SPRITE_SCALING = 0.5
+SPRITE_SCALING_GOLD = 0.2
 
-SCREEN_WIDTH = 800
+SCREEN_WIDTH = 600
 SCREEN_HEIGHT = 600
-SCREEN_TITLE = "Sprite CSV Map Example"
 SPRITE_PIXEL_SIZE = 128
 GRID_PIXEL_SIZE = (SPRITE_PIXEL_SIZE * SPRITE_SCALING)
+NUMBER_OF_GOLD = 50
 
 # How many pixels to keep as a minimum margin between the character
 # and the edge of the screen.
-VIEWPORT_MARGIN = 0
-RIGHT_MARGIN = 0
+VIEWPORT_MARGIN = 40
+RIGHT_MARGIN = 40
 
 # Physics
 MOVEMENT_SPEED = 5
@@ -53,7 +55,7 @@ class MyGame(arcade.Window):
         """
         Initializer
         """
-        super().__init__(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE)
+        super().__init__(SCREEN_WIDTH, SCREEN_HEIGHT)
 
         # Set the working directory (where we expect to find files) to the same
         # directory this .py file is in. You can leave this out of your own
@@ -65,9 +67,11 @@ class MyGame(arcade.Window):
         # Sprite lists
         self.wall_list = None
         self.player_list = None
+        self.gold_list = None
 
         # Set up the player
         self.player_sprite = None
+        self.score = 0
 
         self.physics_engine = None
         self.view_left = 0
@@ -80,13 +84,13 @@ class MyGame(arcade.Window):
         # Sprite lists
         self.player_list = arcade.SpriteList()
         self.wall_list = arcade.SpriteList()
-
+        self.gold_list = arcade.SpriteList()
         # Set up the player
         self.player_sprite = arcade.Sprite("graphics/adventurer/adventurer_stand.png", SPRITE_SCALING)
 
         # Starting position of the player
-        self.player_sprite.center_x = 64
-        self.player_sprite.center_y = 270
+        self.player_sprite.center_x = 100
+        self.player_sprite.center_y = 100
         self.player_list.append(self.player_sprite)
 
         # Get a 2D array made of numbers based on the map
@@ -100,10 +104,7 @@ class MyGame(arcade.Window):
 
                 # For this map, the numbers represent:
                 # -1 = empty
-                # 0  = box
-                # 1  = grass left edge
-                # 2  = grass middle
-                # 3  = grass right edge
+                # 32 = dirt
                 if item == -1:
                     continue
                 elif item == 32:
@@ -112,6 +113,34 @@ class MyGame(arcade.Window):
                 wall.right = column_index * 64
                 wall.top = (7 - row_index) * 64
                 self.wall_list.append(wall)
+         # Create the gold ore
+        for i in range(NUMBER_OF_GOLD):
+
+            gold = arcade.Sprite("graphics/ore_gold.png", SPRITE_SCALING_GOLD)
+
+            # --- IMPORTANT PART ---
+
+            # Boolean variable if we successfully placed the gold ore
+            gold_placed_successfully = False
+
+            # Keep trying until success
+            while not gold_placed_successfully:
+                # Position the gold ore
+                gold.center_x = random.randrange(SCREEN_WIDTH)
+                gold.center_y = random.randrange(SCREEN_HEIGHT)
+
+                # See if the gold ore is hitting a wall
+                wall_hit_list = arcade.check_for_collision_with_list(gold, self.wall_list)
+
+                # See if the gold ore is hitting another gold ore
+                gold_hit_list = arcade.check_for_collision_with_list(gold, self.gold_list)
+
+                if len(wall_hit_list) == 0 and len(gold_hit_list) == 0:
+                    # It is!
+                    gold_placed_successfully = True
+
+            # Add the gold ore to the lists
+            self.gold_list.append(gold)
 
         self.physics_engine = \
             arcade.PhysicsEnginePlatformer(self.player_sprite,
@@ -138,14 +167,12 @@ class MyGame(arcade.Window):
 
         # Draw all the sprites.
         self.player_list.draw()
+        self.gold_list.draw()
         self.wall_list.draw()
 
         # Put the text on the screen.
-        # Adjust the text position based on the view port so that we don't
-        # scroll the text too.
-        distance = self.player_sprite.right
-        output = f"Distance: {distance}"
-        arcade.draw_text(output, self.view_left + 10, self.view_bottom + 20, arcade.color.WHITE, 14)
+        output = f"Score: {self.score}"
+        arcade.draw_text(output, 10, 20, arcade.color.WHITE, 14)
 
         if self.game_over:
             arcade.draw_text("Game Over", self.view_left + 200, self.view_bottom + 200, arcade.color.WHITE, 30)
@@ -175,6 +202,11 @@ class MyGame(arcade.Window):
         if self.player_sprite.right >= self.end_of_map:
             self.game_over = True
 
+        collected = arcade.check_for_collision_with_list(self.player_sprite, self.gold_list)
+
+        for gold in collected:
+            gold.kill()
+            self.score +=1
         # Call update on all sprites (The sprites don't do much in this
         # example though.)
         if not self.game_over:
