@@ -107,17 +107,17 @@ class MyGame(arcade.Window):
                 if item == -1:
                     continue
                 elif item == 32:
-                    wall = arcade.Sprite("graphics/tiles/dirt.png", SPRITE_SCALING)
+                    wall = arcade.Sprite("graphics/Tiles/dirt.png", SPRITE_SCALING)
                 elif item == 57:
-                    wall = arcade.Sprite("graphics/tiles/gravel_dirt.png", SPRITE_SCALING)
+                    wall = arcade.Sprite("graphics/Tiles/gravel_dirt.png", SPRITE_SCALING)
                 elif item == 34:
-                    wall = arcade.Sprite("graphics/tiles/dirt_grass.png", SPRITE_SCALING)
+                    wall = arcade.Sprite("graphics/Tiles/dirt_grass.png", SPRITE_SCALING)
                 elif item == 40:
-                    wall = arcade.Sprite("graphics/tiles/dirt_sand.png", SPRITE_SCALING)
+                    wall = arcade.Sprite("graphics/Tiles/dirt_sand.png", SPRITE_SCALING)
                 elif item == 11:
-                    wall = arcade.Sprite("graphics/tiles/greysand.png", SPRITE_SCALING)
+                    wall = arcade.Sprite("graphics/Tiles/greysand.png", SPRITE_SCALING)
                 elif item == 35:
-                    wall = arcade.Sprite("graphics/tiles/stone_gold.png", SPRITE_SCALING)
+                    wall = arcade.Sprite("graphics/Tiles/stone_gold.png", SPRITE_SCALING)
 
                 wall.right = column_index * 64
                 wall.top = (7 - row_index) * 64

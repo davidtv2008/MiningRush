@@ -15,11 +15,11 @@ import random
 SPRITE_SCALING = 0.5
 SPRITE_SCALING_GOLD = 0.2
 
-SCREEN_WIDTH = 800
+SCREEN_WIDTH = 600
 SCREEN_HEIGHT = 600
 SPRITE_PIXEL_SIZE = 128
 GRID_PIXEL_SIZE = (SPRITE_PIXEL_SIZE * SPRITE_SCALING)
-NUMBER_OF_GOLD = 100
+NUMBER_OF_GOLD = 50
 
 # How many pixels to keep as a minimum margin between the character
 # and the edge of the screen.
@@ -108,7 +108,7 @@ class MyGame(arcade.Window):
                 if item == -1:
                     continue
                 elif item == 32:
-                    wall = arcade.Sprite("graphics/tiles/dirt.png", SPRITE_SCALING)
+                    wall = arcade.Sprite("graphics/Tiles/dirt.png", SPRITE_SCALING)
 
                 wall.right = column_index * 64
                 wall.top = (7 - row_index) * 64
@@ -126,8 +126,8 @@ class MyGame(arcade.Window):
             # Keep trying until success
             while not gold_placed_successfully:
                 # Position the gold ore
-                gold.center_x = random.randrange(SPRITE_PIXEL_SIZE*20)
-                gold.center_y = random.randrange(SPRITE_PIXEL_SIZE*20)
+                gold.center_x = random.randrange(SCREEN_WIDTH)
+                gold.center_y = random.randrange(SCREEN_HEIGHT)
 
                 # See if the gold ore is hitting a wall
                 wall_hit_list = arcade.check_for_collision_with_list(gold, self.wall_list)
@@ -170,10 +170,9 @@ class MyGame(arcade.Window):
         self.gold_list.draw()
         self.wall_list.draw()
 
-        # Put the score on the screen.
-        # The score will follow the viewport
+        # Put the text on the screen.
         output = f"Score: {self.score}"
-        arcade.draw_text(output, self.view_left + 10, self.view_bottom + 20, arcade.color.WHITE, 14)
+        arcade.draw_text(output, 10, 20, arcade.color.WHITE, 14)
 
         if self.game_over:
             arcade.draw_text("Game Over", self.view_left + 200, self.view_bottom + 200, arcade.color.WHITE, 30)
@@ -203,6 +202,11 @@ class MyGame(arcade.Window):
         if self.player_sprite.right >= self.end_of_map:
             self.game_over = True
 
+        collected = arcade.check_for_collision_with_list(self.player_sprite, self.gold_list)
+
+        for gold in collected:
+            gold.kill()
+            self.score +=1
         # Call update on all sprites (The sprites don't do much in this
         # example though.)
         if not self.game_over:
@@ -244,11 +248,7 @@ class MyGame(arcade.Window):
                                 SCREEN_WIDTH + self.view_left,
                                 self.view_bottom,
                                 SCREEN_HEIGHT + self.view_bottom)
-        collected = arcade.check_for_collision_with_list(self.player_sprite, self.gold_list)
 
-        for gold in collected:
-            gold.kill()
-            self.score +=1
 
 def main():
     window = MyGame()
