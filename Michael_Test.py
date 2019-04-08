@@ -1,7 +1,16 @@
 import arcade
-import gc
 import os
 import Block
+
+
+"""
+Todo:
+-Add gold which increases score
+-Add results screen when the player hits escape during the game, which tells the player how much gold they got and
+sends them back to the main menu
+-Refurbish main menu so that the player can choose between three different map level files
+-Implement AI!!!
+"""
 
 
 SCREEN_WIDTH = 800
@@ -16,6 +25,7 @@ VIEWPORT_MARGIN = 256
 RIGHT_MARGIN = 256
 
 STATE = "menu"
+
 
 def get_map(filename):
     """
@@ -32,9 +42,10 @@ def get_map(filename):
         map_array.append(map_row)
     return map_array
 
+
 class MyGame(arcade.Window):
-    def __init__(self,screen_width, screen_height,title):
-        super().__init__(screen_width, screen_height,title)
+    def __init__(self, screen_width, screen_height, title):
+        super().__init__(screen_width, screen_height, title)
 
         file_path = os.path.dirname(os.path.abspath(__file__))
         os.chdir(file_path)
@@ -44,7 +55,6 @@ class MyGame(arcade.Window):
         # Set the background color
         arcade.set_background_color(arcade.color.AMAZON)
         self.background = arcade.load_texture("graphics/menuBackground.png")
-
 
         self.state = "menu"
 
@@ -66,12 +76,12 @@ class MyGame(arcade.Window):
 
     def setup(self):
 
-        print("setup")
+        # print("setup")
         # Sprite lists
         self.player_list = arcade.SpriteList()
         self.block_list = arcade.SpriteList()
 
-        #main menu background
+        # main menu background
         # Get a 2D array made of numbers based on the map
         map_array = get_map("testmapcsv_Platforms.csv")
 
@@ -158,14 +168,14 @@ class MyGame(arcade.Window):
 
         # Draw all the sprites.
         if self.state == "game":
-            print("game start")
+            # print("game start")
             self.block_list.draw()
             self.player_list.draw()
 
             output = f"Row: {self.player_row}\nCol: {self.player_col}"
             arcade.draw_text(output, self.view_left + 10, self.view_bottom + 20, arcade.color.WHITE, 14)
         elif self.state == "menu":
-            print("menu start")
+            # print("menu start")
             self.draw_main_menu()
 
     def on_key_press(self, key, modifiers):
@@ -218,7 +228,7 @@ class MyGame(arcade.Window):
 
     def update(self, delta_time):
 
-        #only update the game when the STATE is "game"
+        # only update the game when the STATE is "game"
         if self.state == "game":
 
             # Move the player based on the user's input
@@ -262,7 +272,7 @@ class MyGame(arcade.Window):
             if changed:
                 arcade.set_viewport(self.view_left, SCREEN_WIDTH + self.view_left, self.view_bottom, SCREEN_HEIGHT + self.view_bottom)
         else:
-            arcade.set_viewport(0,SCREEN_WIDTH,0,SCREEN_HEIGHT)
+            arcade.set_viewport(0, SCREEN_WIDTH, 0, SCREEN_HEIGHT)
 
     def get_map_block(self, row, col):
         if row < 0 or row >= self.map_height or col < 0 or col >= self.map_width:
@@ -284,6 +294,7 @@ class MyGame(arcade.Window):
 def main():
     game = MyGame(SCREEN_WIDTH,SCREEN_HEIGHT,SCREEN_TITLE)
     arcade.run()
+
 
 if __name__ == "__main__":
     main()
