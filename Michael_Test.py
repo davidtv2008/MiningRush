@@ -5,7 +5,6 @@ import Block
 
 """
 Todo:
--Reset self.map_grid upon hitting escape during the game
 -Add gold which increases score
 -Add results screen when the player hits escape during the game, which tells the player how much gold they got and
 sends them back to the main menu
@@ -181,10 +180,13 @@ class MyGame(arcade.Window):
 
     def on_key_press(self, key, modifiers):
         
-        if key == arcade.key.ESCAPE:
+        if self.state == "game" and key == arcade.key.ESCAPE:
+            for i in range(len(self.map_grid)):
+                self.map_grid[i].clear()
+            self.map_grid.clear()
             self.state = "menu"
         
-        elif key == arcade.key.ENTER or key == arcade.key.RETURN:
+        elif self.state == "menu" and (key == arcade.key.ENTER or key == arcade.key.RETURN):
             self.setup()
             self.state = "game"
                     
