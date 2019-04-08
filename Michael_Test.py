@@ -5,6 +5,7 @@ import Block
 
 """
 Todo:
+-Reset self.map_grid upon hitting escape during the game
 -Add gold which increases score
 -Add results screen when the player hits escape during the game, which tells the player how much gold they got and
 sends them back to the main menu
