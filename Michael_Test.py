@@ -191,43 +191,14 @@ class MyGame(arcade.Window):
             self.state = "game"
                     
         elif key == arcade.key.LEFT:
-            # If the space to the left is empty, just move there
-            if self.get_map_block(self.player_row, self.player_col - 1) is "air":
-                self.player.change_x = -SCALED_PIXEL_SIZE
-                self.player_col -= 1
-                if self.get_map_block(self.player_row + 1, self.player_col) is "air":
-                    self.make_player_fall()
-            else:
-                # If there's a block in the way, but there's a block of air above it, move onto the block
-                if self.get_map_block(self.player_row - 1, self.player_col - 1) is "air":
-                    self.player.change_x = -SCALED_PIXEL_SIZE
-                    self.player.change_y = SCALED_PIXEL_SIZE
-                    self.player_row -= 1
-                    self.player_col -= 1
+            self.player_move_left()
 
         elif key == arcade.key.RIGHT:
-            # If the space to the right is empty, just move there
-            if self.get_map_block(self.player_row, self.player_col + 1) is "air":
-                self.player.change_x = SCALED_PIXEL_SIZE
-                self.player_col += 1
-                if self.get_map_block(self.player_row + 1, self.player_col) is "air":
-                    self.make_player_fall()
-            else:
-                # If there's a block in the way, but there's a block of air above it, move onto the block
-                if self.get_map_block(self.player_row - 1, self.player_col + 1) is "air":
-                    self.player.change_x = SCALED_PIXEL_SIZE
-                    self.player.change_y = SCALED_PIXEL_SIZE
-                    self.player_row -= 1
-                    self.player_col += 1
+            self.player_move_right()
 
         # Dig down
         elif key == arcade.key.DOWN:
-            if self.get_map_block(self.player_row + 1, self.player_col) is "stone":
-                self.destroy_map_block(self.player_row + 1, self.player_col)
-                self.player.change_y = -SCALED_PIXEL_SIZE
-                self.player_row += 1
-                if self.get_map_block(self.player_row + 1, self.player_col) is "air":
-                    self.make_player_fall()
+            self.player_dig_down()
 
     def update(self, delta_time):
 
@@ -287,6 +258,44 @@ class MyGame(arcade.Window):
             print("Target block to destroy is out of bounds!")
             return
         self.map_grid[row][col].destroy_block()
+
+    def player_move_left(self):
+        # If the space to the left is empty, just move there
+        if self.get_map_block(self.player_row, self.player_col - 1) is "air":
+            self.player.change_x = -SCALED_PIXEL_SIZE
+            self.player_col -= 1
+            if self.get_map_block(self.player_row + 1, self.player_col) is "air":
+                self.make_player_fall()
+        else:
+            # If there's a block in the way, but there's a block of air above it, move onto the block
+            if self.get_map_block(self.player_row - 1, self.player_col - 1) is "air":
+                self.player.change_x = -SCALED_PIXEL_SIZE
+                self.player.change_y = SCALED_PIXEL_SIZE
+                self.player_row -= 1
+                self.player_col -= 1
+
+    def player_move_right(self):
+        # If the space to the right is empty, just move there
+        if self.get_map_block(self.player_row, self.player_col + 1) is "air":
+            self.player.change_x = SCALED_PIXEL_SIZE
+            self.player_col += 1
+            if self.get_map_block(self.player_row + 1, self.player_col) is "air":
+                self.make_player_fall()
+        else:
+            # If there's a block in the way, but there's a block of air above it, move onto the block
+            if self.get_map_block(self.player_row - 1, self.player_col + 1) is "air":
+                self.player.change_x = SCALED_PIXEL_SIZE
+                self.player.change_y = SCALED_PIXEL_SIZE
+                self.player_row -= 1
+                self.player_col += 1
+
+    def player_dig_down(self):
+        if self.get_map_block(self.player_row + 1, self.player_col) is "stone":
+            self.destroy_map_block(self.player_row + 1, self.player_col)
+            self.player.change_y = -SCALED_PIXEL_SIZE
+            self.player_row += 1
+            if self.get_map_block(self.player_row + 1, self.player_col) is "air":
+                self.make_player_fall()
 
     def make_player_fall(self):
         while self.get_map_block(self.player_row + 1, self.player_col) is "air":
