@@ -15,7 +15,7 @@ import random
 SPRITE_SCALING = 0.5
 SPRITE_SCALING_GOLD = 0.2
 
-SCREEN_WIDTH = 800
+SCREEN_WIDTH = 600
 SCREEN_HEIGHT = 600
 OFFSCREEN_SPACE = 500
 EDGESCREEN = 0
@@ -25,7 +25,7 @@ RIGHT_LIMIT = SCREEN_WIDTH + OFFSCREEN_SPACE
 LEFT_LIMIT = EDGESCREEN
 SPRITE_PIXEL_SIZE = 128
 GRID_PIXEL_SIZE = (SPRITE_PIXEL_SIZE * SPRITE_SCALING)
-NUMBER_OF_GOLD = 100
+NUMBER_OF_GOLD = 50
 
 # How many pixels to keep as a minimum margin between the character
 # and the edge of the screen.
@@ -124,7 +124,7 @@ class MyGame(arcade.Window):
                 if item == -1:
                     continue
                 elif item == 32:
-                    wall = arcade.Sprite("graphics/tiles/dirt.png", SPRITE_SCALING)
+                    wall = arcade.Sprite("graphics/Tiles/dirt.png", SPRITE_SCALING)
 
                 wall.right = column_index * 64
                 wall.top = (7 - row_index) * 64
@@ -135,8 +135,26 @@ class MyGame(arcade.Window):
 
             gold = arcade.Sprite("graphics/ore_gold.png", SPRITE_SCALING_GOLD)
 
-            gold.center_x = random.randrange(LEFT_LIMIT, RIGHT_LIMIT)
-            gold.center_y = random.randrange(BOTTOM_LIMIT, TOP_LIMIT)
+            # --- IMPORTANT PART ---
+
+            # Boolean variable if we successfully placed the gold ore
+            gold_placed_successfully = False
+
+            # Keep trying until success
+            while not gold_placed_successfully:
+                # Position the gold ore
+                gold.center_x = random.randrange(SCREEN_WIDTH)
+                gold.center_y = random.randrange(SCREEN_HEIGHT)
+
+                # See if the gold ore is hitting a wall
+                wall_hit_list = arcade.check_for_collision_with_list(gold, self.wall_list)
+
+                # See if the gold ore is hitting another gold ore
+                gold_hit_list = arcade.check_for_collision_with_list(gold, self.gold_list)
+
+                if len(wall_hit_list) == 0 and len(gold_hit_list) == 0:
+                    # It is!
+                    gold_placed_successfully = True
 
             gold.angle = random.randrange(360)
             gold.change_angle = random.randrange(-5,6)
@@ -181,7 +199,7 @@ class MyGame(arcade.Window):
         arcade.draw_text(output, self.view_left + 10, self.view_bottom + 50, arcade.color.WHITE, 14)
 
         output = f"Score: {self.score}"
-        arcade.draw_text(output, self.view_left + 10, self.view_bottom + 20, arcade.color.WHITE, 14)
+        arcade.draw_text(output, 10, 20, arcade.color.WHITE, 14)
 
         if self.game_over:
             arcade.draw_text("Game Over", self.view_left + (SCREEN_WIDTH/2), self.view_bottom + (SCREEN_HEIGHT/2), arcade.color.WHITE, 40)
@@ -211,8 +229,13 @@ class MyGame(arcade.Window):
         if self.total_time <= 0:
             self.game_over = True
 
-        # Call update on all sprites 
-        # update player movement animation
+        collected = arcade.check_for_collision_with_list(self.player_sprite, self.gold_list)
+
+        for gold in collected:
+            gold.kill()
+            self.score +=1
+        # Call update on all sprites (The sprites don't do much in this
+        # example though.)
         if not self.game_over:
             self.total_time -= delta_time
             self.physics_engine.update()
@@ -257,9 +280,6 @@ class MyGame(arcade.Window):
         # collected contains how many gold ores the player obtained
         collected = arcade.check_for_collision_with_list(self.player_sprite, self.gold_list)
 
-        for gold in collected:
-            gold.kill()
-            self.score +=1
 
 def main():
     window = MyGame()
