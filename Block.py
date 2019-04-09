@@ -14,6 +14,7 @@ class Block(arcade.Sprite):
     def __str__(self):
         return str(self.row) + ", " + str(self.col) + ": " + self.block_type
 
+    # destroy_block turns this Block object into air
     def destroy_block(self):
         self.block_type = "air"
         self.set_texture(1)
