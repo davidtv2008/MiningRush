@@ -132,6 +132,10 @@ class MyGame(arcade.Window):
                     new_block = Block.Block("graphics/Tiles/stone.png", SCALED_PIXEL_SIZE, SPRITE_SCALING, row, col, "stone")
                     new_row.append(new_block)
 
+                elif map_array[row][col] == 92:
+                    new_block = Block.Block("graphics/Tiles/gold_nugget.png", SCALED_PIXEL_SIZE, SPRITE_SCALING, row, col, "gold_nugget")
+                    new_row.append(new_block)
+
                 # stone_gold
                 elif map_array[row][col] == 35:
                     new_block = Block.Block("graphics/Tiles/stone_gold.png", SCALED_PIXEL_SIZE, SPRITE_SCALING, row, col, "stone_gold")
@@ -248,63 +252,100 @@ class MyGame(arcade.Window):
         else:
             arcade.set_viewport(0, SCREEN_WIDTH, 0, SCREEN_HEIGHT)
 
-    def get_map_block(self, row, col):
+    def get_block(self, row, col):
         if row < 0 or row >= self.map_height or col < 0 or col >= self.map_width:
-            return "Out of Bounds"
-        return self.map_grid[row][col].block_type
+            return None
+        return self.map_grid[row][col]
 
     def destroy_map_block(self, row, col):
-        if self.get_map_block(row, col) is "Out of Bounds":
+        block_to_destroy = self.get_block(row, col)
+        if block_to_destroy is None:
             print("Target block to destroy is out of bounds!")
             return
-        self.map_grid[row][col].destroy_block()
+        block_to_destroy.destroy_block()
 
     def player_move_left(self):
-        # If the space to the left is empty, just move there
-        if self.get_map_block(self.player_row, self.player_col - 1) is "air":
+        # Check if we can move into the space to the left of us
+        target_block = self.get_block(self.player_row, self.player_col - 1)
+
+        if target_block.block_type is "air" or target_block.block_type is "gold_nugget":
+
+            if target_block.block_type is "gold_nugget":
+                target_block.destroy_block()
+
             self.player.change_x = -SCALED_PIXEL_SIZE
             self.player_col -= 1
-            if self.get_map_block(self.player_row + 1, self.player_col) is "air":
-                self.make_player_fall()
+            self.check_if_player_should_fall()
+
         else:
-            # If there's a block in the way, but there's a block of air above it, move onto the block
-            if self.get_map_block(self.player_row - 1, self.player_col - 1) is "air":
+            # Check if we can climb up what's blocking us
+            climb_block_check = self.get_block(self.player_row - 1, self.player_col - 1)
+
+            if climb_block_check.block_type is "air" or climb_block_check.block_type is "gold_nugget":
+
+                if climb_block_check.block_type is "gold_nugget":
+                    climb_block_check.destroy_block()
+
                 self.player.change_x = -SCALED_PIXEL_SIZE
                 self.player.change_y = SCALED_PIXEL_SIZE
                 self.player_row -= 1
                 self.player_col -= 1
 
     def player_move_right(self):
-        # If the space to the right is empty, just move there
-        if self.get_map_block(self.player_row, self.player_col + 1) is "air":
+        # Check if we can move into the space to the right of us
+        target_block = self.get_block(self.player_row, self.player_col + 1)
+
+        if target_block.block_type is "air" or target_block.block_type is "gold_nugget":
+
+            if target_block.block_type is "gold_nugget":
+                target_block.destroy_block()
+
             self.player.change_x = SCALED_PIXEL_SIZE
             self.player_col += 1
-            if self.get_map_block(self.player_row + 1, self.player_col) is "air":
-                self.make_player_fall()
+            self.check_if_player_should_fall()
+
         else:
-            # If there's a block in the way, but there's a block of air above it, move onto the block
-            if self.get_map_block(self.player_row - 1, self.player_col + 1) is "air":
+            # Check if we can climb up what's blocking us
+            climb_block_check = self.get_block(self.player_row - 1, self.player_col + 1)
+
+            if climb_block_check.block_type is "air" or climb_block_check.block_type is "gold_nugget":
+
+                if climb_block_check.block_type is "gold_nugget":
+                    climb_block_check.destroy_block()
+
                 self.player.change_x = SCALED_PIXEL_SIZE
                 self.player.change_y = SCALED_PIXEL_SIZE
                 self.player_row -= 1
                 self.player_col += 1
 
     def player_dig_down(self):
-        if self.get_map_block(self.player_row + 1, self.player_col) is "stone":
+        block_to_dig = self.get_block(self.player_row + 1, self.player_col)
+
+        if block_to_dig.block_type is "stone":
             self.destroy_map_block(self.player_row + 1, self.player_col)
             self.player.change_y = -SCALED_PIXEL_SIZE
             self.player_row += 1
-            if self.get_map_block(self.player_row + 1, self.player_col) is "air":
-                self.make_player_fall()
+            self.check_if_player_should_fall()
+
+    def check_if_player_should_fall(self):
+        block_to_check = self.get_block(self.player_row + 1, self.player_col)
+        if block_to_check.block_type is "air" or block_to_check.block_type is "gold_nugget":
+            self.make_player_fall()
 
     def make_player_fall(self):
-        while self.get_map_block(self.player_row + 1, self.player_col) is "air":
+        next_block = self.get_block(self.player_row + 1, self.player_col)
+        while next_block.block_type is "air" or next_block.block_type is "gold_nugget":
+
+            if next_block.block_type is "gold_nugget":
+                next_block.destroy_block()
+
             self.player.change_y -= SCALED_PIXEL_SIZE
             self.player_row += 1
+            next_block = self.get_block(self.player_row + 1, self.player_col)
 
 
 def main():
-    game = MyGame(SCREEN_WIDTH,SCREEN_HEIGHT,SCREEN_TITLE)
+    game = MyGame(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE)
     arcade.run()
 
 
