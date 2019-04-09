@@ -17,6 +17,12 @@ SPRITE_SCALING_GOLD = 0.2
 
 SCREEN_WIDTH = 800
 SCREEN_HEIGHT = 600
+OFFSCREEN_SPACE = 500
+EDGESCREEN = 0
+BOTTOM_LIMIT = -OFFSCREEN_SPACE
+TOP_LIMIT = SCREEN_HEIGHT + OFFSCREEN_SPACE
+RIGHT_LIMIT = SCREEN_WIDTH + OFFSCREEN_SPACE
+LEFT_LIMIT = EDGESCREEN
 SPRITE_PIXEL_SIZE = 128
 GRID_PIXEL_SIZE = (SPRITE_PIXEL_SIZE * SPRITE_SCALING)
 NUMBER_OF_GOLD = 100
@@ -30,6 +36,10 @@ RIGHT_MARGIN = 40
 MOVEMENT_SPEED = 5
 JUMP_SPEED = 14
 GRAVITY = 0.5
+
+
+# class PlayerSprite(arcade.Sprite):
+    
 
 
 def get_map(filename):
@@ -76,6 +86,7 @@ class MyGame(arcade.Window):
         self.physics_engine = None
         self.view_left = 0
         self.view_bottom = 0
+        self.total_time = 0.0
         self.game_over = False
 
     def setup(self):
@@ -85,12 +96,17 @@ class MyGame(arcade.Window):
         self.player_list = arcade.SpriteList()
         self.wall_list = arcade.SpriteList()
         self.gold_list = arcade.SpriteList()
+        
         # Set up the player
+        self.score = 0
         self.player_sprite = arcade.Sprite("graphics/adventurer/adventurer_stand.png", SPRITE_SCALING)
 
+        # Set up the timer in secs
+        self.total_time = 5.0
+
         # Starting position of the player
-        self.player_sprite.center_x = 100
-        self.player_sprite.center_y = 100
+        self.player_sprite.center_x = 40
+        self.player_sprite.center_y = 300
         self.player_list.append(self.player_sprite)
 
         # Get a 2D array made of numbers based on the map
@@ -113,32 +129,17 @@ class MyGame(arcade.Window):
                 wall.right = column_index * 64
                 wall.top = (7 - row_index) * 64
                 self.wall_list.append(wall)
+        
          # Create the gold ore
         for i in range(NUMBER_OF_GOLD):
 
             gold = arcade.Sprite("graphics/ore_gold.png", SPRITE_SCALING_GOLD)
 
-            # --- IMPORTANT PART ---
+            gold.center_x = random.randrange(LEFT_LIMIT, RIGHT_LIMIT)
+            gold.center_y = random.randrange(BOTTOM_LIMIT, TOP_LIMIT)
 
-            # Boolean variable if we successfully placed the gold ore
-            gold_placed_successfully = False
-
-            # Keep trying until success
-            while not gold_placed_successfully:
-                # Position the gold ore
-                gold.center_x = random.randrange(SPRITE_PIXEL_SIZE*20)
-                gold.center_y = random.randrange(SPRITE_PIXEL_SIZE*20)
-
-                # See if the gold ore is hitting a wall
-                wall_hit_list = arcade.check_for_collision_with_list(gold, self.wall_list)
-
-                # See if the gold ore is hitting another gold ore
-                gold_hit_list = arcade.check_for_collision_with_list(gold, self.gold_list)
-
-                if len(wall_hit_list) == 0 and len(gold_hit_list) == 0:
-                    # It is!
-                    gold_placed_successfully = True
-
+            gold.angle = random.randrange(360)
+            gold.change_angle = random.randrange(-5,6)
             # Add the gold ore to the lists
             self.gold_list.append(gold)
 
@@ -165,18 +166,25 @@ class MyGame(arcade.Window):
         # This command has to happen before we start drawing
         arcade.start_render()
 
+        #------Timer------#
+        minutes = int(self.total_time) // 60
+        seconds = int(self.total_time) % 60
+        
         # Draw all the sprites.
         self.player_list.draw()
         self.gold_list.draw()
         self.wall_list.draw()
 
-        # Put the score on the screen.
+        # Put the score & time on the screen.
         # The score will follow the viewport
+        output = f"Time: {minutes:02d}:{seconds:02d}"
+        arcade.draw_text(output, self.view_left + 10, self.view_bottom + 50, arcade.color.WHITE, 14)
+
         output = f"Score: {self.score}"
         arcade.draw_text(output, self.view_left + 10, self.view_bottom + 20, arcade.color.WHITE, 14)
 
         if self.game_over:
-            arcade.draw_text("Game Over", self.view_left + 200, self.view_bottom + 200, arcade.color.WHITE, 30)
+            arcade.draw_text("Game Over", self.view_left + (SCREEN_WIDTH/2), self.view_bottom + (SCREEN_HEIGHT/2), arcade.color.WHITE, 40)
 
     def on_key_press(self, key, modifiers):
         """
@@ -200,15 +208,16 @@ class MyGame(arcade.Window):
     def update(self, delta_time):
         """ Movement and game logic """
 
-        if self.player_sprite.right >= self.end_of_map:
+        if self.total_time <= 0:
             self.game_over = True
 
-        # Call update on all sprites (The sprites don't do much in this
-        # example though.)
+        # Call update on all sprites 
+        # update player movement animation
         if not self.game_over:
+            self.total_time -= delta_time
             self.physics_engine.update()
 
-        # --- Manage Scrolling ---
+        # --- Manage Scrolling --- #
 
         # Track if we need to change the view port
 
@@ -244,6 +253,8 @@ class MyGame(arcade.Window):
                                 SCREEN_WIDTH + self.view_left,
                                 self.view_bottom,
                                 SCREEN_HEIGHT + self.view_bottom)
+        
+        # collected contains how many gold ores the player obtained
         collected = arcade.check_for_collision_with_list(self.player_sprite, self.gold_list)
 
         for gold in collected:
