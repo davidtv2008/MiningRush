@@ -12,6 +12,8 @@ class Player(arcade.Sprite):
         self.right = (self.col * Settings.SCALED_PIXEL_SIZE) - 6
         self.bottom = -(self.row + 1) * Settings.SCALED_PIXEL_SIZE
 
+        self.score = 0
+        
     def move_left(self):
         # Check if we can move into the space to the left of us
         target_block = self.map.get_block(self.row, self.col - 1)
@@ -20,6 +22,7 @@ class Player(arcade.Sprite):
 
             if target_block.block_type is "gold_nugget":
                 target_block.destroy_block()
+                self.score += 1
 
             self.col -= 1
             self.update_player_position()
@@ -33,6 +36,7 @@ class Player(arcade.Sprite):
 
                 if climb_block_check.block_type is "gold_nugget":
                     climb_block_check.destroy_block()
+                    self.score += 1
 
                 self.row -= 1
                 self.col -= 1
@@ -46,6 +50,7 @@ class Player(arcade.Sprite):
 
             if target_block.block_type is "gold_nugget":
                 target_block.destroy_block()
+                self.score += 1
 
             self.col += 1
             self.update_player_position()
@@ -59,6 +64,7 @@ class Player(arcade.Sprite):
 
                 if climb_block_check.block_type is "gold_nugget":
                     climb_block_check.destroy_block()
+                    self.score += 1
 
                 self.row -= 1
                 self.col += 1
@@ -84,6 +90,7 @@ class Player(arcade.Sprite):
 
             if next_block.block_type is "gold_nugget":
                 next_block.destroy_block()
+                self.score += 1
 
             self.row += 1
             self.update_player_position()

@@ -63,6 +63,9 @@ class MyGame(arcade.Window):
             output = f"Row: {self.map.player.row}\nCol: {self.map.player.col}"
             arcade.draw_text(output, self.view_left + 10, self.view_bottom + 20, arcade.color.WHITE, 14)
 
+            output = f"Score : {self.map.player.score}"
+            arcade.draw_text(output, self.view_left + 10, self.view_bottom + 50, arcade.color.WHITE, 14)
+
         elif self.state == "menu":
             self.draw_main_menu()
 
