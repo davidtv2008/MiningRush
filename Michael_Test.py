@@ -85,30 +85,34 @@ class MyGame(arcade.Window):
         arcade.draw_text(output, 200, 250, arcade.color.WHITE, 24)
 
     def on_key_press(self, key, modifiers):
-        
-        if self.state == "game" and key == arcade.key.ESCAPE:
+
+        # Start game if ENTER is pressed on the main menu
+        if self.state == "menu" and (key == arcade.key.ENTER or key == arcade.key.RETURN):
+            self.setup()
+            self.state = "game"
+
+        # Show results screen if ESC is hit during the game
+        elif self.state == "game" and key == arcade.key.ESCAPE:
             for i in range(len(self.map.map_grid)):
                 self.map.map_grid[i].clear()
             self.map.map_grid.clear()
-            
             self.state = "game over"
-        
+
+        # Return to main menu if ESC is hit during the results screen
         elif self.state == "game over" and key == arcade.key.ESCAPE:
             self.state = "menu"
-        
-        elif self.state == "menu" and (key == arcade.key.ENTER or key == arcade.key.RETURN):
-            self.setup()
-            self.state = "game"
-                    
-        elif key == arcade.key.LEFT:
-            self.map.player.move_left()
 
-        elif key == arcade.key.RIGHT:
-            self.map.player.move_right()
+        # Handle player inputs during the game
+        if self.state == "game":
 
-        # Dig down
-        elif key == arcade.key.DOWN:
-            self.map.player.dig_down()
+            if key == arcade.key.LEFT:
+                self.map.player.move_left()
+
+            elif key == arcade.key.RIGHT:
+                self.map.player.move_right()
+
+            elif key == arcade.key.DOWN:
+                self.map.player.dig_down()
 
     def update(self, delta_time):
 

@@ -84,7 +84,7 @@ class Player(arcade.Sprite):
             self.row += 1
             self.update_player_position()
             self.check_if_player_should_fall()
-            self.score += 1
+            self.score += 5
 
     def check_if_player_should_fall(self):
         block_to_check = self.map.get_block(self.row + 1, self.col)
