@@ -68,6 +68,21 @@ class MyGame(arcade.Window):
 
         elif self.state == "menu":
             self.draw_main_menu()
+        
+        else:
+            self.draw_game_over()
+
+    def draw_game_over(self):
+        """
+        Draw "Game Over" Screen
+        """
+        arcade.set_background_color(arcade.color.BLACK)
+
+        output = f"Final Score : {self.map.player.score}"
+        arcade.draw_text(output, 250, 350, arcade.color.WHITE, 34)
+
+        output = f"Press Esc to go to Main Menu"
+        arcade.draw_text(output, 200, 250, arcade.color.WHITE, 24)
 
     def on_key_press(self, key, modifiers):
         
@@ -75,6 +90,10 @@ class MyGame(arcade.Window):
             for i in range(len(self.map.map_grid)):
                 self.map.map_grid[i].clear()
             self.map.map_grid.clear()
+            
+            self.state = "game over"
+        
+        elif self.state == "game over" and key == arcade.key.ESCAPE:
             self.state = "menu"
         
         elif self.state == "menu" and (key == arcade.key.ENTER or key == arcade.key.RETURN):
