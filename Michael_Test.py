@@ -6,9 +6,6 @@ import Map
 
 """
 Todo:
--Add gold which increases score
--Add results screen when the player hits escape during the game, which tells the player how much gold they got and
-sends them back to the main menu
 -Refurbish main menu so that the player can choose between three different map level files
 -Implement AI!!!
 """
