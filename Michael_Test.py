@@ -22,23 +22,23 @@ class MyGame(arcade.Window):
         self.background = None
         self.button_list = None
 
-        self.options = Options
         self.button_list = []
         self.mapFile = "testmapcsv_Platforms.csv"
         self.player = "User"
 
         #create our 3 options to select what map to load
-        map1_button = self.options.OptionButton((screen_width / 2) - 120, screen_height - 450, "Map 1")
+        map1_button = Options.OptionButton((screen_width / 2) - 120, screen_height - 450, "Map 1")
         #map1 will be our defult option
         map1_button.face_color = arcade.color.ALLOY_ORANGE
 
-        map2_button = self.options.OptionButton((screen_width / 2),screen_height - 450, "Map 2")
-        map3_button = self.options.OptionButton((screen_width / 2) + 120,screen_height - 450, "Map 3")
+        map2_button = Options.OptionButton((screen_width / 2),screen_height - 450, "Map 2")
+        map3_button = Options.OptionButton((screen_width / 2) + 120,screen_height - 450, "Map 3")
 
         #create our 2 option to select if user or AI will control player
-        user_button = self.options.OptionButton((screen_width / 2) - 60, screen_height - 550, "User")
+        user_button = Options.OptionButton((screen_width / 2) - 60, screen_height - 550, "User")
+        #user is the default option
         user_button.face_color = arcade.color.ALLOY_ORANGE
-        ai_button = self.options.OptionButton((screen_width / 2) + 60,screen_height - 550, "AI")
+        ai_button = Options.OptionButton((screen_width / 2) + 60,screen_height - 550, "AI")
         
         
         self.button_list.append(map1_button)
@@ -87,7 +87,8 @@ class MyGame(arcade.Window):
             if buttonSelected.text == "Map 1":
                 #add the file path of map 1
                 self.mapFile = "testmapcsv_Platforms.csv"
-
+                
+                #unselect Map2 and Map3 buttons, only keep Map 1 selected
                 if x.text == "Map 2" or x.text == "Map 3":
                     x.pressed = False
                     x.face_color = arcade.color.LIGHT_GRAY
@@ -95,20 +96,23 @@ class MyGame(arcade.Window):
                 #add the file path of map 2
                 self.mapFile = "gold_map.csv"
 
+                #unselect Map1 and Map3 buttons, only keep Map 2 selected
                 if x.text == "Map 1" or x.text == "Map 3":
                     x.pressed = False
                     x.face_color = arcade.color.LIGHT_GRAY
             if buttonSelected.text == "Map 3":
                 #add the file path of map 3
                 self.mapFile = "testmapcsv_Platforms.csv"
-
+                
+                #unselect Map1 and Map2 buttons, only keep Map 2 selected
                 if x.text == "Map 1" or x.text == "Map 2":
                     x.pressed = False
                     x.face_color = arcade.color.LIGHT_GRAY
             if buttonSelected.text == "AI":
                 #set the player to be the AI
                 self.player = "AI"
-
+                
+                #unselect user button
                 if x.text == "User":
                     x.pressed = False
                     x.face_color = arcade.color.LIGHT_GRAY
@@ -116,6 +120,7 @@ class MyGame(arcade.Window):
                 #set the player to be the user
                 self.player = "User"
 
+                #unselect the AI
                 if x.text == "AI":
                     x.pressed = False
                     x.face_color = arcade.color.LIGHT_GRAY
