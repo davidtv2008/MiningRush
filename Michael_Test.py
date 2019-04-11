@@ -2,6 +2,7 @@ import arcade
 import os
 import Settings
 import Map
+import Options
 
 
 """
@@ -19,7 +20,33 @@ class MyGame(arcade.Window):
         os.chdir(file_path)
 
         self.background = None
+        self.button_list = None
 
+        self.options = Options
+        self.button_list = []
+        self.mapFile = "testmapcsv_Platforms.csv"
+        self.player = "User"
+
+        #create our 3 options to select what map to load
+        map1_button = self.options.OptionButton((screen_width / 2) - 120, screen_height - 450, "Map 1")
+        #map1 will be our defult option
+        map1_button.face_color = arcade.color.ALLOY_ORANGE
+
+        map2_button = self.options.OptionButton((screen_width / 2),screen_height - 450, "Map 2")
+        map3_button = self.options.OptionButton((screen_width / 2) + 120,screen_height - 450, "Map 3")
+
+        #create our 2 option to select if user or AI will control player
+        user_button = self.options.OptionButton((screen_width / 2) - 60, screen_height - 550, "User")
+        user_button.face_color = arcade.color.ALLOY_ORANGE
+        ai_button = self.options.OptionButton((screen_width / 2) + 60,screen_height - 550, "AI")
+        
+        
+        self.button_list.append(map1_button)
+        self.button_list.append(map2_button)
+        self.button_list.append(map3_button)
+        self.button_list.append(user_button)
+        self.button_list.append(ai_button)
+    
         # Set the background color
         arcade.set_background_color(arcade.color.AMAZON)
         self.background = arcade.load_texture("graphics/menuBackground.png")
@@ -33,7 +60,9 @@ class MyGame(arcade.Window):
 
     def setup(self):
 
-        self.map = Map.Map("testmapcsv_Platforms.csv")
+        #self.map = Map.Map("testmapcsv_Platforms.csv")
+        self.map = Map.Map(self.mapFile)
+
 
         # Set the background color
         arcade.set_background_color(arcade.color.AMAZON)
@@ -42,6 +71,54 @@ class MyGame(arcade.Window):
         # These numbers set where we have 'scrolled' to.
         self.view_left = 0
         self.view_bottom = 0
+
+    def set_selection(self):
+        #perform the selection of the button option
+        print("clicked on play_button")
+        
+    def on_mouse_press(self, x, y, button, key_modifiers):
+        buttonSelected = Options.check_mouse_press_for_buttons(x, y, self.button_list)
+        buttonSelected.face_color = arcade.color.ALLOY_ORANGE
+        #print(buttonSelected.text)
+
+        #update button color to reflect our selection
+        #everytime the button is clicked
+        for x in self.button_list:
+            if buttonSelected.text == "Map 1":
+                #add the file path of map 1
+                self.mapFile = "testmapcsv_Platforms.csv"
+
+                if x.text == "Map 2" or x.text == "Map 3":
+                    x.pressed = False
+                    x.face_color = arcade.color.LIGHT_GRAY
+            if buttonSelected.text == "Map 2":
+                #add the file path of map 2
+                self.mapFile = "gold_map.csv"
+
+                if x.text == "Map 1" or x.text == "Map 3":
+                    x.pressed = False
+                    x.face_color = arcade.color.LIGHT_GRAY
+            if buttonSelected.text == "Map 3":
+                #add the file path of map 3
+                self.mapFile = "testmapcsv_Platforms.csv"
+
+                if x.text == "Map 1" or x.text == "Map 2":
+                    x.pressed = False
+                    x.face_color = arcade.color.LIGHT_GRAY
+            if buttonSelected.text == "AI":
+                #set the player to be the AI
+                self.player = "AI"
+
+                if x.text == "User":
+                    x.pressed = False
+                    x.face_color = arcade.color.LIGHT_GRAY
+            if buttonSelected.text == "User":
+                #set the player to be the user
+                self.player = "User"
+
+                if x.text == "AI":
+                    x.pressed = False
+                    x.face_color = arcade.color.LIGHT_GRAY
 
     def draw_main_menu(self):
         # Draw main menu screen.
@@ -68,6 +145,9 @@ class MyGame(arcade.Window):
 
         elif self.state == "menu":
             self.draw_main_menu()
+            # Draw the buttons
+            for button in self.button_list:
+                button.draw()
         
         else:
             self.draw_game_over()
@@ -154,6 +234,8 @@ class MyGame(arcade.Window):
                 arcade.set_viewport(self.view_left, Settings.SCREEN_WIDTH + self.view_left, self.view_bottom, Settings.SCREEN_HEIGHT + self.view_bottom)
         else:
             arcade.set_viewport(0, Settings.SCREEN_WIDTH, 0, Settings.SCREEN_HEIGHT)
+            
+
 
 
 def main():
