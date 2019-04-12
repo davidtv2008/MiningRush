@@ -23,7 +23,7 @@ class MyGame(arcade.Window):
         self.button_list = None
 
         self.button_list = []
-        self.mapFile = "testmapcsv_Platforms.csv"
+        self.mapFile = "map_1.csv"
         self.player = "User"
 
         #create our 3 options to select what map to load
@@ -60,7 +60,7 @@ class MyGame(arcade.Window):
 
     def setup(self):
 
-        #self.map = Map.Map("testmapcsv_Platforms.csv")
+        #self.map = Map.Map("map_1.csv")
         self.map = Map.Map(self.mapFile)
 
 
@@ -86,7 +86,7 @@ class MyGame(arcade.Window):
         for x in self.button_list:
             if buttonSelected.text == "Map 1":
                 #add the file path of map 1
-                self.mapFile = "testmapcsv_Platforms.csv"
+                self.mapFile = "map_1.csv"
                 
                 #unselect Map2 and Map3 buttons, only keep Map 1 selected
                 if x.text == "Map 2" or x.text == "Map 3":
@@ -94,7 +94,7 @@ class MyGame(arcade.Window):
                     x.face_color = arcade.color.LIGHT_GRAY
             if buttonSelected.text == "Map 2":
                 #add the file path of map 2
-                self.mapFile = "gold_map.csv"
+                self.mapFile = "map_2.csv"
 
                 #unselect Map1 and Map3 buttons, only keep Map 2 selected
                 if x.text == "Map 1" or x.text == "Map 3":
@@ -102,7 +102,7 @@ class MyGame(arcade.Window):
                     x.face_color = arcade.color.LIGHT_GRAY
             if buttonSelected.text == "Map 3":
                 #add the file path of map 3
-                self.mapFile = "testmapcsv_Platforms.csv"
+                self.mapFile = "map_1.csv"
                 
                 #unselect Map1 and Map2 buttons, only keep Map 2 selected
                 if x.text == "Map 1" or x.text == "Map 2":
