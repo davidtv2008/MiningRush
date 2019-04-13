@@ -104,7 +104,7 @@ class MyGame(arcade.Window):
                         x.face_color = arcade.color.LIGHT_GRAY
                 if buttonSelected.text == "Map 3":
                     #add the file path of map 3
-                    self.mapFile = "map_1.csv"
+                    self.mapFile = "map_3.csv"
                 
                     #unselect Map1 and Map2 buttons, only keep Map 2 selected
                     if x.text == "Map 1" or x.text == "Map 2":
