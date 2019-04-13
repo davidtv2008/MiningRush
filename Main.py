@@ -7,7 +7,6 @@ import Options
 
 """
 Todo:
--Refurbish main menu so that the player can choose between three different map level files
 -Implement AI!!!
 """
 
