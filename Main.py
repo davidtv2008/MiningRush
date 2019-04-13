@@ -7,7 +7,6 @@ import Options
 
 """
 Todo:
--Refurbish main menu so that the player can choose between three different map level files
 -Implement AI!!!
 """
 
@@ -26,21 +25,20 @@ class MyGame(arcade.Window):
         self.mapFile = "map_1.csv"
         self.player = "User"
 
-        #create our 3 options to select what map to load
+        # create our 3 options to select what map to load
         map1_button = Options.OptionButton((screen_width / 2) - 120, screen_height - 450, "Map 1")
-        #map1 will be our defult option
+        # map1 will be our default option
         map1_button.face_color = arcade.color.ALLOY_ORANGE
 
-        map2_button = Options.OptionButton((screen_width / 2),screen_height - 450, "Map 2")
-        map3_button = Options.OptionButton((screen_width / 2) + 120,screen_height - 450, "Map 3")
+        map2_button = Options.OptionButton((screen_width / 2), screen_height - 450, "Map 2")
+        map3_button = Options.OptionButton((screen_width / 2) + 120, screen_height - 450, "Map 3")
 
-        #create our 2 option to select if user or AI will control player
+        # create our 2 option to select if user or AI will control player
         user_button = Options.OptionButton((screen_width / 2) - 60, screen_height - 550, "User")
-        #user is the default option
+        # user is the default option
         user_button.face_color = arcade.color.ALLOY_ORANGE
-        ai_button = Options.OptionButton((screen_width / 2) + 60,screen_height - 550, "AI")
-        
-        
+        ai_button = Options.OptionButton((screen_width / 2) + 60, screen_height - 550, "AI")
+
         self.button_list.append(map1_button)
         self.button_list.append(map2_button)
         self.button_list.append(map3_button)
@@ -60,9 +58,8 @@ class MyGame(arcade.Window):
 
     def setup(self):
 
-        #self.map = Map.Map("map_1.csv")
+        # self.map = Map.Map("map_1.csv")
         self.map = Map.Map(self.mapFile)
-
 
         # Set the background color
         arcade.set_background_color(arcade.color.AMAZON)
@@ -73,56 +70,56 @@ class MyGame(arcade.Window):
         self.view_bottom = 0
 
     def set_selection(self):
-        #perform the selection of the button option
+        # perform the selection of the button option
         print("clicked on play_button")
         
     def on_mouse_press(self, x, y, button, key_modifiers):
-        buttonSelected = Options.check_mouse_press_for_buttons(x, y, self.button_list)
+        button_selected = Options.check_mouse_press_for_buttons(x, y, self.button_list)
 
-        if buttonSelected != None:
-            buttonSelected.face_color = arcade.color.ALLOY_ORANGE
-            #print(buttonSelected.text)
+        if button_selected is not None:
+            button_selected.face_color = arcade.color.ALLOY_ORANGE
+            # print(buttonSelected.text)
 
-            #update button color to reflect our selection
-            #everytime the button is clicked
+            # Update button color to reflect our selection
+            # Every time the button is clicked
             for x in self.button_list:
-                if buttonSelected.text == "Map 1":
-                    #add the file path of map 1
+                if button_selected.text == "Map 1":
+                    # Add the file path of map 1
                     self.mapFile = "map_1.csv"
-                
-                    #unselect Map2 and Map3 buttons, only keep Map 1 selected
+
+                    # Deselect Map2 and Map3 buttons, only keep Map 1 selected
                     if x.text == "Map 2" or x.text == "Map 3":
                         x.pressed = False
                         x.face_color = arcade.color.LIGHT_GRAY
-                if buttonSelected.text == "Map 2":
-                    #add the file path of map 2
+                if button_selected.text == "Map 2":
+                    # Add the file path of map 2
                     self.mapFile = "map_2.csv"
 
-                    #unselect Map1 and Map3 buttons, only keep Map 2 selected
+                    # Deselect Map1 and Map3 buttons, only keep Map 2 selected
                     if x.text == "Map 1" or x.text == "Map 3":
                         x.pressed = False
                         x.face_color = arcade.color.LIGHT_GRAY
-                if buttonSelected.text == "Map 3":
-                    #add the file path of map 3
-                    self.mapFile = "map_1.csv"
-                
-                    #unselect Map1 and Map2 buttons, only keep Map 2 selected
+                if button_selected.text == "Map 3":
+                    # Add the file path of map 3
+                    self.mapFile = "map_3.csv"
+
+                    # Deselect Map1 and Map2 buttons, only keep Map 2 selected
                     if x.text == "Map 1" or x.text == "Map 2":
                         x.pressed = False
                         x.face_color = arcade.color.LIGHT_GRAY
-                if buttonSelected.text == "AI":
-                    #set the player to be the AI
+                if button_selected.text == "AI":
+                    # Set the player to be the AI
                     self.player = "AI"
-                
-                    #unselect user button
+
+                    # Deselect user button
                     if x.text == "User":
                         x.pressed = False
                         x.face_color = arcade.color.LIGHT_GRAY
-                if buttonSelected.text == "User":
-                    #set the player to be the user
+                if button_selected.text == "User":
+                    # set the player to be the user
                     self.player = "User"
 
-                    #unselect the AI
+                    # Deselect the AI
                     if x.text == "AI":
                         x.pressed = False
                         x.face_color = arcade.color.LIGHT_GRAY
@@ -242,8 +239,6 @@ class MyGame(arcade.Window):
         else:
             arcade.set_viewport(0, Settings.SCREEN_WIDTH, 0, Settings.SCREEN_HEIGHT)
             
-
-
 
 def main():
     game = MyGame(Settings.SCREEN_WIDTH, Settings.SCREEN_HEIGHT, Settings.SCREEN_TITLE)
