@@ -83,6 +83,7 @@ class MyGame(arcade.Window):
             # Update button color to reflect our selection
             # Every time the button is clicked
             for x in self.button_list:
+
                 if button_selected.text == "Map 1":
                     # Add the file path of map 1
                     self.mapFile = "map_1.csv"
@@ -91,6 +92,7 @@ class MyGame(arcade.Window):
                     if x.text == "Map 2" or x.text == "Map 3":
                         x.pressed = False
                         x.face_color = arcade.color.LIGHT_GRAY
+
                 if button_selected.text == "Map 2":
                     # Add the file path of map 2
                     self.mapFile = "map_2.csv"
@@ -99,6 +101,7 @@ class MyGame(arcade.Window):
                     if x.text == "Map 1" or x.text == "Map 3":
                         x.pressed = False
                         x.face_color = arcade.color.LIGHT_GRAY
+
                 if button_selected.text == "Map 3":
                     # Add the file path of map 3
                     self.mapFile = "map_3.csv"
@@ -107,6 +110,7 @@ class MyGame(arcade.Window):
                     if x.text == "Map 1" or x.text == "Map 2":
                         x.pressed = False
                         x.face_color = arcade.color.LIGHT_GRAY
+
                 if button_selected.text == "AI":
                     # Set the player to be the AI
                     self.player = "AI"
@@ -115,6 +119,7 @@ class MyGame(arcade.Window):
                     if x.text == "User":
                         x.pressed = False
                         x.face_color = arcade.color.LIGHT_GRAY
+
                 if button_selected.text == "User":
                     # set the player to be the user
                     self.player = "User"
