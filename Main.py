@@ -78,52 +78,54 @@ class MyGame(arcade.Window):
         
     def on_mouse_press(self, x, y, button, key_modifiers):
         buttonSelected = Options.check_mouse_press_for_buttons(x, y, self.button_list)
-        buttonSelected.face_color = arcade.color.ALLOY_ORANGE
-        #print(buttonSelected.text)
 
-        #update button color to reflect our selection
-        #everytime the button is clicked
-        for x in self.button_list:
-            if buttonSelected.text == "Map 1":
-                #add the file path of map 1
-                self.mapFile = "map_1.csv"
-                
-                #unselect Map2 and Map3 buttons, only keep Map 1 selected
-                if x.text == "Map 2" or x.text == "Map 3":
-                    x.pressed = False
-                    x.face_color = arcade.color.LIGHT_GRAY
-            if buttonSelected.text == "Map 2":
-                #add the file path of map 2
-                self.mapFile = "map_2.csv"
+        if buttonSelected != None:
+            buttonSelected.face_color = arcade.color.ALLOY_ORANGE
+            #print(buttonSelected.text)
 
-                #unselect Map1 and Map3 buttons, only keep Map 2 selected
-                if x.text == "Map 1" or x.text == "Map 3":
-                    x.pressed = False
-                    x.face_color = arcade.color.LIGHT_GRAY
-            if buttonSelected.text == "Map 3":
-                #add the file path of map 3
-                self.mapFile = "map_1.csv"
+            #update button color to reflect our selection
+            #everytime the button is clicked
+            for x in self.button_list:
+                if buttonSelected.text == "Map 1":
+                    #add the file path of map 1
+                    self.mapFile = "map_1.csv"
                 
-                #unselect Map1 and Map2 buttons, only keep Map 2 selected
-                if x.text == "Map 1" or x.text == "Map 2":
-                    x.pressed = False
-                    x.face_color = arcade.color.LIGHT_GRAY
-            if buttonSelected.text == "AI":
-                #set the player to be the AI
-                self.player = "AI"
-                
-                #unselect user button
-                if x.text == "User":
-                    x.pressed = False
-                    x.face_color = arcade.color.LIGHT_GRAY
-            if buttonSelected.text == "User":
-                #set the player to be the user
-                self.player = "User"
+                    #unselect Map2 and Map3 buttons, only keep Map 1 selected
+                    if x.text == "Map 2" or x.text == "Map 3":
+                        x.pressed = False
+                        x.face_color = arcade.color.LIGHT_GRAY
+                if buttonSelected.text == "Map 2":
+                    #add the file path of map 2
+                    self.mapFile = "map_2.csv"
 
-                #unselect the AI
-                if x.text == "AI":
-                    x.pressed = False
-                    x.face_color = arcade.color.LIGHT_GRAY
+                    #unselect Map1 and Map3 buttons, only keep Map 2 selected
+                    if x.text == "Map 1" or x.text == "Map 3":
+                        x.pressed = False
+                        x.face_color = arcade.color.LIGHT_GRAY
+                if buttonSelected.text == "Map 3":
+                    #add the file path of map 3
+                    self.mapFile = "map_1.csv"
+                
+                    #unselect Map1 and Map2 buttons, only keep Map 2 selected
+                    if x.text == "Map 1" or x.text == "Map 2":
+                        x.pressed = False
+                        x.face_color = arcade.color.LIGHT_GRAY
+                if buttonSelected.text == "AI":
+                    #set the player to be the AI
+                    self.player = "AI"
+                
+                    #unselect user button
+                    if x.text == "User":
+                        x.pressed = False
+                        x.face_color = arcade.color.LIGHT_GRAY
+                if buttonSelected.text == "User":
+                    #set the player to be the user
+                    self.player = "User"
+
+                    #unselect the AI
+                    if x.text == "AI":
+                        x.pressed = False
+                        x.face_color = arcade.color.LIGHT_GRAY
 
     def draw_main_menu(self):
         # Draw main menu screen.
