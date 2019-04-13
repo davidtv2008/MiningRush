@@ -18,57 +18,62 @@ class Player(arcade.Sprite):
         # Check if we can move into the space to the left of us
         target_block = self.map.get_block(self.row, self.col - 1)
 
-        if target_block.block_type is "air" or target_block.block_type is "gold_nugget":
+        if target_block is not None:
 
-            if target_block.block_type is "gold_nugget":
-                target_block.destroy_block()
-                self.score += 1
+            if target_block.block_type is "air" or target_block.block_type is "gold_nugget":
 
-            self.col -= 1
-            self.update_player_position()
-            self.check_if_player_should_fall()
-
-        else:
-            # Check if we can climb up what's blocking us
-            climb_block_check = self.map.get_block(self.row - 1, self.col - 1)
-
-            if climb_block_check.block_type is "air" or climb_block_check.block_type is "gold_nugget":
-
-                if climb_block_check.block_type is "gold_nugget":
-                    climb_block_check.destroy_block()
+                if target_block.block_type is "gold_nugget":
+                    target_block.destroy_block()
                     self.score += 1
 
-                self.row -= 1
                 self.col -= 1
                 self.update_player_position()
+                self.check_if_player_should_fall()
+
+            else:
+                # Check if we can climb up what's blocking us
+                climb_block_check = self.map.get_block(self.row - 1, self.col - 1)
+
+                if climb_block_check is not None and (climb_block_check.block_type is "air" or climb_block_check.block_type is "gold_nugget"):
+
+                    if climb_block_check.block_type is "gold_nugget":
+                        climb_block_check.destroy_block()
+                        self.score += 1
+
+                    self.row -= 1
+                    self.col -= 1
+                    self.update_player_position()
 
     def move_right(self):
         # Check if we can move into the space to the right of us
         target_block = self.map.get_block(self.row, self.col + 1)
 
-        if target_block.block_type is "air" or target_block.block_type is "gold_nugget":
+        # Only None if we're out of bounds
+        if target_block is not None:
 
-            if target_block.block_type is "gold_nugget":
-                target_block.destroy_block()
-                self.score += 1
+            if target_block.block_type is "air" or target_block.block_type is "gold_nugget":
 
-            self.col += 1
-            self.update_player_position()
-            self.check_if_player_should_fall()
-
-        else:
-            # Check if we can climb up what's blocking us
-            climb_block_check = self.map.get_block(self.row - 1, self.col + 1)
-
-            if climb_block_check.block_type is "air" or climb_block_check.block_type is "gold_nugget":
-
-                if climb_block_check.block_type is "gold_nugget":
-                    climb_block_check.destroy_block()
+                if target_block.block_type is "gold_nugget":
+                    target_block.destroy_block()
                     self.score += 1
 
-                self.row -= 1
                 self.col += 1
                 self.update_player_position()
+                self.check_if_player_should_fall()
+
+            else:
+                # Check if we can climb up what's blocking us
+                climb_block_check = self.map.get_block(self.row - 1, self.col + 1)
+
+                if climb_block_check is not None and (climb_block_check.block_type is "air" or climb_block_check.block_type is "gold_nugget"):
+
+                    if climb_block_check.block_type is "gold_nugget":
+                        climb_block_check.destroy_block()
+                        self.score += 1
+
+                    self.row -= 1
+                    self.col += 1
+                    self.update_player_position()
 
     def dig_down(self):
         block_to_dig = self.map.get_block(self.row + 1, self.col)
@@ -81,19 +86,22 @@ class Player(arcade.Sprite):
        
         elif block_to_dig.block_type is "stone_gold":
             self.map.destroy_map_block(self.row + 1, self.col)
+            self.score += 5
             self.row += 1
             self.update_player_position()
             self.check_if_player_should_fall()
-            self.score += 5
 
     def check_if_player_should_fall(self):
         block_to_check = self.map.get_block(self.row + 1, self.col)
-        if block_to_check.block_type is "air" or block_to_check.block_type is "gold_nugget":
-            self.make_player_fall()
+
+        if block_to_check is not None:
+            if block_to_check.block_type is "air" or block_to_check.block_type is "gold_nugget":
+                self.make_player_fall()
 
     def make_player_fall(self):
         next_block = self.map.get_block(self.row + 1, self.col)
-        while next_block.block_type is "air" or next_block.block_type is "gold_nugget":
+
+        while next_block is not None and (next_block.block_type is "air" or next_block.block_type is "gold_nugget"):
 
             if next_block.block_type is "gold_nugget":
                 next_block.destroy_block()
