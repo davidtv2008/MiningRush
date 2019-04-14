@@ -80,8 +80,8 @@ class Map:
 
             self.map_grid.append(new_row)
 
-        self.map_width = len(self.map_grid)
-        self.map_height = len(self.map_grid[0])
+        self.map_width = len(self.map_grid[0])
+        self.map_height = len(self.map_grid)
 
         # Set sprite positions of all the blocks in map_grid
         for row in range(len(self.map_grid)):
@@ -108,7 +108,7 @@ class Map:
 
     # get_block returns the Block object within map_grid using the supplied row and col (or None if it found nothing)
     def get_block(self, row, col):
-        if row < 0 or row >= self.map_height - 1 or col < 0 or col >= self.map_width:
+        if row < 0 or row >= self.map_height or col < 0 or col >= self.map_width:
             return None
         return self.map_grid[row][col]
 

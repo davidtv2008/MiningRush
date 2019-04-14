@@ -104,7 +104,7 @@ class MyGame(arcade.Window):
 
                 if button_selected.text == "Map 3":
                     # Add the file path of map 3
-                    self.mapFile = "map_3.csv"
+                    self.mapFile = "debug_map.csv"
 
                     # Deselect Map1 and Map2 buttons, only keep Map 2 selected
                     if x.text == "Map 1" or x.text == "Map 2":
