@@ -1,17 +1,19 @@
 import arcade
 import Settings
 import Player
+import ArtificialPlayer
 import Block
 
 
 class Map:
-    def __init__(self, map_file_name):
+    def __init__(self, map_file_name, ai_mode):
         self.map_file_name = map_file_name
         self.map_width = 0
         self.map_height = 0
         self.map_grid = []
 
         self.player = None
+        self.ai_mode = ai_mode
 
         # Sprite lists
         self.player_list = arcade.SpriteList()
@@ -39,7 +41,11 @@ class Map:
 
                 # Player
                 elif map_array[row][col] == 42:
-                    self.player = Player.Player(self, row, col)
+                    if self.ai_mode is False:
+                        self.player = Player.Player(self, row, col)
+                    else:
+                        self.player = ArtificialPlayer.ArtificialPlayer(self, row, col)
+
                     self.player_list.append(self.player)
                     new_block = Block.Block("graphics/Tiles/air.png", Settings.SCALED_PIXEL_SIZE, Settings.SPRITE_SCALING, row, col, "air")
                     new_row.append(new_block)

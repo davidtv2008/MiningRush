@@ -12,6 +12,7 @@ Todo:
 
 
 class MyGame(arcade.Window):
+
     def __init__(self, screen_width, screen_height, title):
         super().__init__(screen_width, screen_height, title)
 
@@ -23,7 +24,7 @@ class MyGame(arcade.Window):
 
         self.button_list = []
         self.mapFile = "map_1.csv"
-        self.player = "User"
+        self.ai_mode = False
 
         # create our 3 options to select what map to load
         map1_button = Options.OptionButton((screen_width / 2) - 120, screen_height - 450, "Map 1")
@@ -57,9 +58,7 @@ class MyGame(arcade.Window):
         self.view_bottom = 0
 
     def setup(self):
-
-        # self.map = Map.Map("map_1.csv")
-        self.map = Map.Map(self.mapFile)
+        self.map = Map.Map(self.mapFile, self.ai_mode)
 
         # Set the background color
         arcade.set_background_color(arcade.color.AMAZON)
@@ -68,10 +67,6 @@ class MyGame(arcade.Window):
         # These numbers set where we have 'scrolled' to.
         self.view_left = 0
         self.view_bottom = 0
-
-    def set_selection(self):
-        # perform the selection of the button option
-        print("clicked on play_button")
         
     def on_mouse_press(self, x, y, button, key_modifiers):
         button_selected = Options.check_mouse_press_for_buttons(x, y, self.button_list)
@@ -113,7 +108,7 @@ class MyGame(arcade.Window):
 
                 if button_selected.text == "AI":
                     # Set the player to be the AI
-                    self.player = "AI"
+                    self.ai_mode = True
 
                     # Deselect user button
                     if x.text == "User":
@@ -122,7 +117,7 @@ class MyGame(arcade.Window):
 
                 if button_selected.text == "User":
                     # set the player to be the user
-                    self.player = "User"
+                    self.ai_mode = False
 
                     # Deselect the AI
                     if x.text == "AI":
@@ -134,7 +129,6 @@ class MyGame(arcade.Window):
         arcade.draw_texture_rectangle(Settings.SCREEN_WIDTH / 2, Settings.SCREEN_HEIGHT / 2, Settings.SCREEN_WIDTH, Settings.SCREEN_HEIGHT, self.background)
         
     def on_draw(self):
-
         # This command has to happen before we start drawing
         arcade.start_render()
 
@@ -162,9 +156,6 @@ class MyGame(arcade.Window):
             self.draw_game_over()
 
     def draw_game_over(self):
-        """
-        Draw "Game Over" Screen
-        """
         arcade.set_background_color(arcade.color.BLACK)
 
         output = f"Final Score : {self.map.player.score}"
@@ -174,25 +165,14 @@ class MyGame(arcade.Window):
         arcade.draw_text(output, 200, 250, arcade.color.WHITE, 24)
 
     def on_key_press(self, key, modifiers):
+        # Handle inputs during the Menu state
+        if self.state == "menu":
+            if key == arcade.key.ENTER or key == arcade.key.RETURN:
+                self.state = "game"
+                self.setup()
 
-        # Start game if ENTER is pressed on the main menu
-        if self.state == "menu" and (key == arcade.key.ENTER or key == arcade.key.RETURN):
-            self.setup()
-            self.state = "game"
-
-        # Show results screen if ESC is hit during the game
-        elif self.state == "game" and key == arcade.key.ESCAPE:
-            for i in range(len(self.map.map_grid)):
-                self.map.map_grid[i].clear()
-            self.map.map_grid.clear()
-            self.state = "game over"
-
-        # Return to main menu if ESC is hit during the results screen
-        elif self.state == "game over" and key == arcade.key.ESCAPE:
-            self.state = "menu"
-
-        # Handle player inputs during the game
-        if self.state == "game":
+        # Handle inputs during the Game state
+        elif self.state == "game":
 
             if key == arcade.key.LEFT:
                 self.map.player.move_left()
@@ -203,15 +183,23 @@ class MyGame(arcade.Window):
             elif key == arcade.key.DOWN:
                 self.map.player.dig_down()
 
-    def update(self, delta_time):
+            elif key == arcade.key.ESCAPE:
+                for i in range(len(self.map.map_grid)):
+                    self.map.map_grid[i].clear()
+                self.map.map_grid.clear()
+                self.state = "game over"
 
+        # Handle inputs during the Game Over state
+        elif self.state == "game over":
+            if key == arcade.key.ESCAPE:
+                self.state = "menu"
+
+    def update(self, delta_time):
         # only update the game when the STATE is "game"
         if self.state == "game":
 
             # --- Manage Scrolling ---
-
             # Track if we need to change the view port
-
             changed = False
 
             # Scroll left
@@ -241,6 +229,8 @@ class MyGame(arcade.Window):
             # If we need to scroll, go ahead and do it.
             if changed:
                 arcade.set_viewport(self.view_left, Settings.SCREEN_WIDTH + self.view_left, self.view_bottom, Settings.SCREEN_HEIGHT + self.view_bottom)
+
+        # Set viewport to this anytime we're not in-game
         else:
             arcade.set_viewport(0, Settings.SCREEN_WIDTH, 0, Settings.SCREEN_HEIGHT)
             
