@@ -113,6 +113,7 @@ class Player(arcade.Sprite):
             self.update_player_position()
             next_block = self.map.get_block(self.row + 1, self.col)
 
+    # This function updates the player's sprite to their current position
     def update_player_position(self):
         self.right = (self.col * Settings.SCALED_PIXEL_SIZE) - 6
         self.bottom = -(self.row + 1) * Settings.SCALED_PIXEL_SIZE

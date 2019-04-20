@@ -14,6 +14,44 @@ class ArtificialPlayer(arcade.Sprite):
 
         self.score = 0
 
+        # AI stuff
+        self.move_timer_length = 0.25
+        self.move_timer = self.move_timer_length
+        self.instruction_list = []
+        self.generate_instruction_list()
+
+    # This is where we should do all of the "AI" stuff
+    def generate_instruction_list(self):
+        # I don't think python has a push function for lists, so I'm just using insert
+        self.instruction_list.insert(0, 'left')
+        self.instruction_list.insert(0, 'dig')
+        self.instruction_list.insert(0, 'dig')
+        self.instruction_list.insert(0, 'dig')
+        self.instruction_list.insert(0, 'dig')
+        self.instruction_list.insert(0, 'dig')
+        self.instruction_list.insert(0, 'right')
+        self.instruction_list.insert(0, 'dig')
+        self.instruction_list.insert(0, 'left')
+        self.instruction_list.insert(0, 'dig')
+
+    def update_ai(self, delta_time):
+        self.move_timer -= delta_time
+        if self.move_timer <= 0:
+            self.move_timer += self.move_timer_length
+
+            if len(self.instruction_list) > 0:
+                instruction = self.instruction_list[len(self.instruction_list) - 1]
+                if instruction is "left":
+                    self.move_left()
+                elif instruction is "right":
+                    self.move_right()
+                elif instruction is "dig":
+                    self.dig_down()
+                self.instruction_list.pop()
+
+            else:
+                self.map.game.end_game()
+
     def move_left(self):
         # Check if we can move into the space to the left of us
         target_block = self.map.get_block(self.row, self.col - 1)
@@ -113,6 +151,7 @@ class ArtificialPlayer(arcade.Sprite):
             self.update_player_position()
             next_block = self.map.get_block(self.row + 1, self.col)
 
+    # This function updates the robot's sprite to their new position
     def update_player_position(self):
         self.right = (self.col * Settings.SCALED_PIXEL_SIZE) - 6
         self.bottom = -(self.row + 1) * Settings.SCALED_PIXEL_SIZE

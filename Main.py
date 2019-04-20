@@ -23,7 +23,7 @@ class MyGame(arcade.Window):
         self.button_list = None
 
         self.button_list = []
-        self.mapFile = "map_1.csv"
+        self.map_file = "map_1.csv"
         self.ai_mode = False
 
         # create our 3 options to select what map to load
@@ -58,7 +58,7 @@ class MyGame(arcade.Window):
         self.view_bottom = 0
 
     def setup(self):
-        self.map = Map.Map(self.mapFile, self.ai_mode)
+        self.map = Map.Map(self)
 
         # Set the background color
         arcade.set_background_color(arcade.color.AMAZON)
@@ -81,7 +81,7 @@ class MyGame(arcade.Window):
 
                 if button_selected.text == "Map 1":
                     # Add the file path of map 1
-                    self.mapFile = "map_1.csv"
+                    self.map_file = "map_1.csv"
 
                     # Deselect Map2 and Map3 buttons, only keep Map 1 selected
                     if x.text == "Map 2" or x.text == "Map 3":
@@ -90,7 +90,7 @@ class MyGame(arcade.Window):
 
                 if button_selected.text == "Map 2":
                     # Add the file path of map 2
-                    self.mapFile = "map_2.csv"
+                    self.map_file = "map_2.csv"
 
                     # Deselect Map1 and Map3 buttons, only keep Map 2 selected
                     if x.text == "Map 1" or x.text == "Map 3":
@@ -99,7 +99,7 @@ class MyGame(arcade.Window):
 
                 if button_selected.text == "Map 3":
                     # Add the file path of map 3
-                    self.mapFile = "debug_map.csv"
+                    self.map_file = "debug_map.csv"
 
                     # Deselect Map1 and Map2 buttons, only keep Map 2 selected
                     if x.text == "Map 1" or x.text == "Map 2":
@@ -174,20 +174,16 @@ class MyGame(arcade.Window):
         # Handle inputs during the Game state
         elif self.state == "game":
 
-            if key == arcade.key.LEFT:
-                self.map.player.move_left()
+            if key == arcade.key.ESCAPE:
+                self.end_game()
 
-            elif key == arcade.key.RIGHT:
-                self.map.player.move_right()
-
-            elif key == arcade.key.DOWN:
-                self.map.player.dig_down()
-
-            elif key == arcade.key.ESCAPE:
-                for i in range(len(self.map.map_grid)):
-                    self.map.map_grid[i].clear()
-                self.map.map_grid.clear()
-                self.state = "game over"
+            if self.ai_mode is False:
+                if key == arcade.key.LEFT:
+                    self.map.player.move_left()
+                elif key == arcade.key.RIGHT:
+                    self.map.player.move_right()
+                elif key == arcade.key.DOWN:
+                    self.map.player.dig_down()
 
         # Handle inputs during the Game Over state
         elif self.state == "game over":
@@ -197,6 +193,9 @@ class MyGame(arcade.Window):
     def update(self, delta_time):
         # only update the game when the STATE is "game"
         if self.state == "game":
+
+            if self.ai_mode is True:
+                self.map.player.update_ai(delta_time)
 
             # --- Manage Scrolling ---
             # Track if we need to change the view port
@@ -233,6 +232,12 @@ class MyGame(arcade.Window):
         # Set viewport to this anytime we're not in-game
         else:
             arcade.set_viewport(0, Settings.SCREEN_WIDTH, 0, Settings.SCREEN_HEIGHT)
+
+    def end_game(self):
+        for i in range(len(self.map.map_grid)):
+            self.map.map_grid[i].clear()
+        self.map.map_grid.clear()
+        self.state = "game over"
             
 
 def main():

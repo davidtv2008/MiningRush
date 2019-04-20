@@ -6,14 +6,16 @@ import Block
 
 
 class Map:
-    def __init__(self, map_file_name, ai_mode):
-        self.map_file_name = map_file_name
+    def __init__(self, game):
+        self.game = game
+
+        self.map_file_name = game.map_file
         self.map_width = 0
         self.map_height = 0
         self.map_grid = []
 
         self.player = None
-        self.ai_mode = ai_mode
+        self.ai_mode = game.ai_mode
 
         # Sprite lists
         self.player_list = arcade.SpriteList()
@@ -41,7 +43,7 @@ class Map:
 
                 # Player
                 elif map_array[row][col] == 42:
-                    if self.ai_mode is False:
+                    if self.game.ai_mode is False:
                         self.player = Player.Player(self, row, col)
                     else:
                         self.player = ArtificialPlayer.ArtificialPlayer(self, row, col)
