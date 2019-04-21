@@ -5,6 +5,21 @@ import ArtificialPlayer
 import Block
 
 
+'''
+Map 1:
+    -Tests if the AI Player is able to move through a simple linear path, and if they know to dig a gold block for more points.
+    -Target score: 12
+    
+Map 2:
+    -Tests if the AI Player can determine which path they need to go down to get the most points.
+    -Target score: 33
+    
+Map 3:
+    -A standard map.
+    -Target score: ???
+'''
+
+
 class Map:
     def __init__(self, game):
         self.game = game
@@ -77,6 +92,7 @@ class Map:
                     new_block = Block.Block("graphics/Tiles/stone.png", Settings.SCALED_PIXEL_SIZE, Settings.SPRITE_SCALING, row, col, "stone")
                     new_row.append(new_block)
 
+                # gold_nugget
                 elif map_array[row][col] == 92:
                     new_block = Block.Block("graphics/Tiles/gold_nugget.png", Settings.SCALED_PIXEL_SIZE, Settings.SPRITE_SCALING, row, col, "gold_nugget")
                     new_row.append(new_block)
