@@ -22,6 +22,30 @@ class ArtificialPlayer(arcade.Sprite):
 
     # This is where we should do all of the "AI" stuff
     def generate_instruction_list(self):
+        
+        
+        map_file = open('map_1.csv')
+        map_array = []
+        for line in map_file:
+            line = line.strip()
+            map_row = line.split(",")
+            for index, item in enumerate(map_row):
+                map_row[index] = int(item)
+            map_array.append(map_row)
+        
+      
+        for i in range(len(map_array)):
+            
+            for j in range(len(map_array[i])):
+                
+                if map_array[i][j] == -1 :
+                    self.instruction_list.append( 'right')
+                if map_array[i][j] == 34 :
+                    self.instruction_list.append( 'left')
+                if map_array[i][j] == 35 :
+                    self.instruction_list.append( 'dig')
+        
+        
         # I don't think python has a push function for lists, so I'm just using insert
         self.instruction_list.insert(0, 'left')
         self.instruction_list.insert(0, 'dig')
