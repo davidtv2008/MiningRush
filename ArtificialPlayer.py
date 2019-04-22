@@ -18,60 +18,46 @@ class ArtificialPlayer(arcade.Sprite):
         self.move_timer_length = 0.25
         self.move_timer = self.move_timer_length
         self.instruction_list = []
-        self.generate_instruction_list()
+        self.map_array = self.map.get_map(self.map.map_file_name)
+        #self.generate_instruction_list()
+        self.visited = self.map_array
 
     # This is where we should do all of the "AI" stuff
     def generate_instruction_list(self):
-        
-        
-        map_file = open('map_1.csv')
-        map_array = []
-        for line in map_file:
-            line = line.strip()
-            map_row = line.split(",")
-            for index, item in enumerate(map_row):
-                map_row[index] = int(item)
-            map_array.append(map_row)
-        
-      
-        for i in range(len(map_array)):
-            
-            for j in range(len(map_array[i])):
-                
-                if map_array[i][j] == -1 :
-                    self.instruction_list.append( 'right')
-                if map_array[i][j] == 34 :
-                    self.instruction_list.append( 'left')
-                if map_array[i][j] == 35 :
-                    self.instruction_list.append( 'dig')
-        
-        
         # I don't think python has a push function for lists, so I'm just using insert
-        self.instruction_list.insert(0, 'left')
-        self.instruction_list.insert(0, 'dig')
-        self.instruction_list.insert(0, 'dig')
-        self.instruction_list.insert(0, 'dig')
-        self.instruction_list.insert(0, 'dig')
-        self.instruction_list.insert(0, 'dig')
-        self.instruction_list.insert(0, 'right')
-        self.instruction_list.insert(0, 'dig')
-        self.instruction_list.insert(0, 'left')
-        self.instruction_list.insert(0, 'dig')
+        
+        
+        
+        '''
+        for i in range(len(self.map_array)):
+            
+            for j in range(len(self.map_array[i])):
+                
+                if self.map_array[i][j] == -1 :
+                    self.instruction_list.append( 'right')
+                if self.map_array[i][j] == 34 :
+                    self.instruction_list.append( 'left')
+                if self.map_array[i][j] == 35 :
+                    self.instruction_list.append( 'dig')
+'''
 
+        
     def update_ai(self, delta_time):
         self.move_timer -= delta_time
         if self.move_timer <= 0:
             self.move_timer += self.move_timer_length
 
-            if len(self.instruction_list) > 0:
-                instruction = self.instruction_list[len(self.instruction_list) - 1]
-                if instruction is "left":
-                    self.move_left()
-                elif instruction is "right":
+            if self.score < 12:
+                
+                if self.map_array[self.row][self.col+1] == -1 or self.map_array[self.row][self.col+1] == 92 and self.visited[self.row][self.col+1] != 1 or self.map_array[self.row][self.col+1] == 35  :
                     self.move_right()
-                elif instruction is "dig":
+                    self.visited[self.row][self.col] = 1
+                elif self.map_array[self.row][self.col-1] == -1 or self.map_array[self.row][self.col+1] == 32 or self.map_array[self.row][self.col-1] == 92 and self.visited[self.row][self.col-1] != 1  :
+                    self.move_left()
+                    self.visited[self.row][self.col] = 1
+                if self.map_array[self.row+1][self.col] == 35 or self.map_array[self.row+1][self.col] == 11 :
                     self.dig_down()
-                self.instruction_list.pop()
+                
 
             else:
                 self.map.game.end_game()
