@@ -16,7 +16,7 @@ Map 2:
     
 Map 3:
     -A standard map.
-    -Target score: ???
+    -Target score: 60
 '''
 
 

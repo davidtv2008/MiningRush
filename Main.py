@@ -49,7 +49,6 @@ class MyGame(arcade.Window):
         # Set the background color
         arcade.set_background_color(arcade.color.AMAZON)
         self.background = arcade.load_texture("graphics/menuBackground.png")
-
         self.state = "menu"
 
         # Map stuff
@@ -62,7 +61,6 @@ class MyGame(arcade.Window):
 
         # Set the background color
         arcade.set_background_color(arcade.color.AMAZON)
-
         # Set the view port boundaries
         # These numbers set where we have 'scrolled' to.
         self.view_left = 0
@@ -99,7 +97,7 @@ class MyGame(arcade.Window):
 
                 if button_selected.text == "Map 3":
                     # Add the file path of map 3
-                    self.map_file = "debug_map.csv"
+                    self.map_file = "map_3.csv"
 
                     # Deselect Map1 and Map2 buttons, only keep Map 2 selected
                     if x.text == "Map 1" or x.text == "Map 2":
@@ -127,7 +125,7 @@ class MyGame(arcade.Window):
     def draw_main_menu(self):
         # Draw main menu screen.
         arcade.draw_texture_rectangle(Settings.SCREEN_WIDTH / 2, Settings.SCREEN_HEIGHT / 2, Settings.SCREEN_WIDTH, Settings.SCREEN_HEIGHT, self.background)
-        
+
     def on_draw(self):
         # This command has to happen before we start drawing
         arcade.start_render()
@@ -137,6 +135,7 @@ class MyGame(arcade.Window):
             self.map.block_list.draw()
             self.map.player_list.draw()
 
+
             output = f"Row: {self.map.player.row}\nCol: {self.map.player.col}"
             arcade.draw_text(output, self.view_left + 10, self.view_bottom + 20, arcade.color.WHITE, 14)
 
@@ -145,6 +144,7 @@ class MyGame(arcade.Window):
 
             output = f"Press ESC to quit"
             arcade.draw_text(output, self.view_left + 10, self.view_bottom + 550, arcade.color.BLACK, 14)
+
 
         elif self.state == "menu":
             self.draw_main_menu()
