@@ -19,22 +19,25 @@ class ArtificialPlayer(arcade.Sprite):
         self.move_timer = self.move_timer_length
         self.instruction_list = []
         self.map_array = self.map.get_map(self.map.map_file_name)
-        
-        
+
         self.generate_instruction_list()
-        #self.visited = self.map_array
+        # self.visited = self.map_array
 
     def generate_instruction_list(self):
-        if self.map.map_file_name == "map_3.csv" :
-            start = [1,1]
-            end = [17,9]
-        if self.map.map_file_name == "map_2.csv" :
-            start = [1,1]
-            end = [13,5]
-        if self.map.map_file_name == "map_1.csv" :
-            start = [1,1]
-            end = [7,5]
-        self.instruction_list = self.BFS(self.map_array, start, end)
+        start = None
+        end = None
+
+        if self.map.map_file_name == "map_3.csv":
+            start = [1, 1]
+            end = [17, 9]
+        if self.map.map_file_name == "map_2.csv":
+            start = [1, 1]
+            end = [13, 5]
+        if self.map.map_file_name == "map_1.csv":
+            start = [1, 1]
+            end = [7, 5]
+
+        self.instruction_list = self.bfs(self.map_array, start, end)
         self.instruction_list.reverse()
 
     def update_ai(self, delta_time):
@@ -42,31 +45,30 @@ class ArtificialPlayer(arcade.Sprite):
         if self.move_timer <= 0:
             self.move_timer += self.move_timer_length
             
-            if len(self.instruction_list) > 0 :
+            if len(self.instruction_list) > 0:
                 instruction1 = self.instruction_list[len(self.instruction_list) - 1]
                 instruction2 = self.instruction_list[len(self.instruction_list) - 2]
 
-                if  self.map_array[self.row+1][self.col] == 35:
+                if self.map_array[self.row+1][self.col] == 35:
                     self.dig_down()
-                if instruction1[0]  == instruction2[0] and instruction1[1]  < instruction2[1]:
+                if instruction1[0] == instruction2[0] and instruction1[1] < instruction2[1]:
                     self.move_right()
-                if instruction1[0]  == instruction2[0] and instruction1[1]  > instruction2[1]:
+                if instruction1[0] == instruction2[0] and instruction1[1] > instruction2[1]:
                     self.move_left()
-                if instruction1[0]  < instruction2[0] and instruction1[1]  > instruction2[1]:
+                if instruction1[0] < instruction2[0] and instruction1[1] > instruction2[1]:
                     self.move_left()
-                if instruction1[0]  > instruction2[0] and instruction1[1]  < instruction2[1]:
+                if instruction1[0] > instruction2[0] and instruction1[1] < instruction2[1]:
                     self.move_right()
                 
-                if (instruction1[0]  < instruction2[0] and instruction1[1]  == instruction2[1]) :
+                if instruction1[0] < instruction2[0] and instruction1[1] == instruction2[1]:
                     self.dig_down()
 
                 self.instruction_list.pop()
 
             else:
-	            self.map.game.end_game()
-    
-    
-    def BFS(self,maze, start, end):
+                self.map.game.end_game()
+
+    def bfs(self, maze, start, end):
         
         queue = [start]
         visited = []
@@ -80,23 +82,21 @@ class ArtificialPlayer(arcade.Sprite):
             if front[0] == end[0] and front[1] == end[1]:
                 return path
             elif front not in visited:
-                adja = self.getAdjacentSpaces(maze, front, visited)
-                for adjacentSpace in adja:
-                    newPath = list(path)
-                    newPath.append(adjacentSpace)
-                    queue.append(newPath)  
+                adjacent_spaces = self.get_adjacent_spaces(maze, front, visited)
+                for adjacent_space in adjacent_spaces:
+                    new_path = list(path)
+                    new_path.append(adjacent_space)
+                    queue.append(new_path)
                 visited.append(front)
         return None
 
-
-    def getAdjacentSpaces( self, maze, space, visited):
-        ''' Returns all legal spaces surrounding the current space
-        :param space: tuple containing coordinates (row, col)
-        :return: all legal spaces
-        '''
+    def get_adjacent_spaces(self, maze, space, visited):
+        # Returns all legal spaces surrounding the current space
+        # :param space: tuple containing coordinates (row, col)
+        # :return: all legal spaces
         spaces = list()
-        #spaces.append((space[0]-1, space[1]+1))# Climb
-        #spaces.append((space[0]+1, space[1]-1))# Climb
+        # spaces.append((space[0]-1, space[1]+1))# Climb
+        # spaces.append((space[0]+1, space[1]-1))# Climb
         spaces.append((space[0]+1, space[1]))  # Down
         spaces.append((space[0], space[1]-1))  # Left
         spaces.append((space[0], space[1]+1))  # Right
@@ -106,7 +106,6 @@ class ArtificialPlayer(arcade.Sprite):
             if maze[i[0]][i[1]] != 34 and maze[i[0]][i[1]] != 32 and maze[i[0]][i[1]] != 40 and maze[i[0]][i[1]] != 57 and i not in visited:
                 final.append(i)
         return final
-
 
     def move_left(self):
         # Check if we can move into the space to the left of us
