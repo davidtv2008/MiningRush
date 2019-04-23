@@ -15,52 +15,98 @@ class ArtificialPlayer(arcade.Sprite):
         self.score = 0
 
         # AI stuff
-        self.move_timer_length = 0.25
+        self.move_timer_length = 0.5
         self.move_timer = self.move_timer_length
         self.instruction_list = []
         self.map_array = self.map.get_map(self.map.map_file_name)
-        #self.generate_instruction_list()
-        self.visited = self.map_array
+        
+        
+        self.generate_instruction_list()
+        #self.visited = self.map_array
 
-    # This is where we should do all of the "AI" stuff
     def generate_instruction_list(self):
-        # I don't think python has a push function for lists, so I'm just using insert
-        
-        
-        
-        '''
-        for i in range(len(self.map_array)):
-            
-            for j in range(len(self.map_array[i])):
-                
-                if self.map_array[i][j] == -1 :
-                    self.instruction_list.append( 'right')
-                if self.map_array[i][j] == 34 :
-                    self.instruction_list.append( 'left')
-                if self.map_array[i][j] == 35 :
-                    self.instruction_list.append( 'dig')
-'''
+        if self.map.map_file_name == "map_3.csv" :
+            start = [1,1]
+            end = [17,9]
+        if self.map.map_file_name == "map_2.csv" :
+            start = [1,1]
+            end = [13,5]
+        if self.map.map_file_name == "map_1.csv" :
+            start = [1,1]
+            end = [7,5]
+        self.instruction_list = self.BFS(self.map_array, start, end)
+        self.instruction_list.reverse()
 
-        
     def update_ai(self, delta_time):
         self.move_timer -= delta_time
         if self.move_timer <= 0:
             self.move_timer += self.move_timer_length
+            
+            if len(self.instruction_list) > 0 :
+                instruction1 = self.instruction_list[len(self.instruction_list) - 1]
+                instruction2 = self.instruction_list[len(self.instruction_list) - 2]
 
-            if self.score < 12:
-                
-                if self.map_array[self.row][self.col+1] == -1 or self.map_array[self.row][self.col+1] == 92 and self.visited[self.row][self.col+1] != 1 or self.map_array[self.row][self.col+1] == 35  :
-                    self.move_right()
-                    self.visited[self.row][self.col] = 1
-                elif self.map_array[self.row][self.col-1] == -1 or self.map_array[self.row][self.col+1] == 32 or self.map_array[self.row][self.col-1] == 92 and self.visited[self.row][self.col-1] != 1  :
-                    self.move_left()
-                    self.visited[self.row][self.col] = 1
-                if self.map_array[self.row+1][self.col] == 35 or self.map_array[self.row+1][self.col] == 11 :
+                if  self.map_array[self.row+1][self.col] == 35:
                     self.dig_down()
+                if instruction1[0]  == instruction2[0] and instruction1[1]  < instruction2[1]:
+                    self.move_right()
+                if instruction1[0]  == instruction2[0] and instruction1[1]  > instruction2[1]:
+                    self.move_left()
+                if instruction1[0]  < instruction2[0] and instruction1[1]  > instruction2[1]:
+                    self.move_left()
+                if instruction1[0]  > instruction2[0] and instruction1[1]  < instruction2[1]:
+                    self.move_right()
                 
+                if (instruction1[0]  < instruction2[0] and instruction1[1]  == instruction2[1]) :
+                    self.dig_down()
+
+                self.instruction_list.pop()
 
             else:
-                self.map.game.end_game()
+	            self.map.game.end_game()
+    
+    
+    def BFS(self,maze, start, end):
+        
+        queue = [start]
+        visited = []
+        
+        while len(queue) != 0:
+            if queue[0] == start:
+                path = [queue.pop(0)]  # Required due to a quirk with tuples in Python
+            else:
+                path = queue.pop(0)
+            front = path[-1]
+            if front[0] == end[0] and front[1] == end[1]:
+                return path
+            elif front not in visited:
+                adja = self.getAdjacentSpaces(maze, front, visited)
+                for adjacentSpace in adja:
+                    newPath = list(path)
+                    newPath.append(adjacentSpace)
+                    queue.append(newPath)  
+                visited.append(front)
+        return None
+
+
+    def getAdjacentSpaces( self, maze, space, visited):
+        ''' Returns all legal spaces surrounding the current space
+        :param space: tuple containing coordinates (row, col)
+        :return: all legal spaces
+        '''
+        spaces = list()
+        #spaces.append((space[0]-1, space[1]+1))# Climb
+        #spaces.append((space[0]+1, space[1]-1))# Climb
+        spaces.append((space[0]+1, space[1]))  # Down
+        spaces.append((space[0], space[1]-1))  # Left
+        spaces.append((space[0], space[1]+1))  # Right
+
+        final = list()
+        for i in spaces:
+            if maze[i[0]][i[1]] != 34 and maze[i[0]][i[1]] != 32 and maze[i[0]][i[1]] != 40 and maze[i[0]][i[1]] != 57 and i not in visited:
+                final.append(i)
+        return final
+
 
     def move_left(self):
         # Check if we can move into the space to the left of us
