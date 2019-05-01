@@ -45,28 +45,31 @@ class ArtificialPlayer(arcade.Sprite):
         if self.move_timer <= 0:
             self.move_timer += self.move_timer_length
             
-            if len(self.instruction_list) > 0:
+            if  self.map_array[self.row+1][self.col] == 35:
+                    self.dig_down()
+                    return
+
+            if len(self.instruction_list) > 0 :
                 instruction1 = self.instruction_list[len(self.instruction_list) - 1]
                 instruction2 = self.instruction_list[len(self.instruction_list) - 2]
 
-                if self.map_array[self.row+1][self.col] == 35:
-                    self.dig_down()
-                if instruction1[0] == instruction2[0] and instruction1[1] < instruction2[1]:
+                if instruction1[0]  == instruction2[0] and instruction1[1]  < instruction2[1]:
                     self.move_right()
-                if instruction1[0] == instruction2[0] and instruction1[1] > instruction2[1]:
+                elif instruction1[0]  == instruction2[0] and instruction1[1]  > instruction2[1]:
                     self.move_left()
-                if instruction1[0] < instruction2[0] and instruction1[1] > instruction2[1]:
+                
+                elif instruction1[0]  > instruction2[0] and instruction1[1]  > instruction2[1]:
                     self.move_left()
-                if instruction1[0] > instruction2[0] and instruction1[1] < instruction2[1]:
+                elif instruction1[0]  > instruction2[0] and instruction1[1]  < instruction2[1]:
                     self.move_right()
                 
-                if instruction1[0] < instruction2[0] and instruction1[1] == instruction2[1]:
+                elif (instruction1[0]  < instruction2[0] and instruction1[1]  == instruction2[1]) :
                     self.dig_down()
 
                 self.instruction_list.pop()
 
             else:
-                self.map.game.end_game()
+	            self.map.game.end_game()
 
     def bfs(self, maze, start, end):
         
