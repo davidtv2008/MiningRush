@@ -15,7 +15,7 @@ class ArtificialPlayer(arcade.Sprite):
         self.score = 0
 
         # AI stuff
-        self.move_timer_length = 0.5
+        self.move_timer_length = 0.3
         self.move_timer = self.move_timer_length
         self.instruction_list = []
         self.map_array = self.map.get_map(self.map.map_file_name)
