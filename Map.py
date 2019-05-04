@@ -2,6 +2,7 @@ import arcade
 import Settings
 import Player
 import ArtificialPlayer
+import AStarPlayer
 import Block
 
 
@@ -61,7 +62,8 @@ class Map:
                     if self.game.ai_mode is False:
                         self.player = Player.Player(self, row, col)
                     else:
-                        self.player = ArtificialPlayer.ArtificialPlayer(self, row, col)
+                        # self.player = ArtificialPlayer.ArtificialPlayer(self, row, col)
+                        self.player = AStarPlayer.AStarPlayer(self, row, col)
 
                     self.player_list.append(self.player)
                     new_block = Block.Block("graphics/Tiles/air.png", Settings.SCALED_PIXEL_SIZE, Settings.SPRITE_SCALING, row, col, "air")
@@ -106,6 +108,9 @@ class Map:
 
         self.map_width = len(self.map_grid[0])
         self.map_height = len(self.map_grid)
+
+        if isinstance(self.player, AStarPlayer.AStarPlayer):
+            self.player.initiate_a_star()
 
         # Set sprite positions of all the blocks in map_grid
         for row in range(len(self.map_grid)):

@@ -5,12 +5,6 @@ import Map
 import Options
 
 
-"""
-Todo:
--Implement AI!!!
-"""
-
-
 class MyGame(arcade.Window):
 
     def __init__(self, screen_width, screen_height, title):
@@ -45,9 +39,7 @@ class MyGame(arcade.Window):
         self.button_list.append(map3_button)
         self.button_list.append(user_button)
         self.button_list.append(ai_button)
-    
-        # Set the background color
-        arcade.set_background_color(arcade.color.AMAZON)
+
         self.background = arcade.load_texture("graphics/menuBackground.png")
         self.state = "menu"
 
@@ -58,11 +50,7 @@ class MyGame(arcade.Window):
 
     def setup(self):
         self.map = Map.Map(self)
-
-        # Set the background color
         arcade.set_background_color(arcade.color.AMAZON)
-        # Set the view port boundaries
-        # These numbers set where we have 'scrolled' to.
         self.view_left = 0
         self.view_bottom = 0
         
@@ -71,59 +59,40 @@ class MyGame(arcade.Window):
 
         if button_selected is not None:
             button_selected.face_color = arcade.color.ALLOY_ORANGE
-            # print(buttonSelected.text)
 
-            # Update button color to reflect our selection
-            # Every time the button is clicked
             for x in self.button_list:
 
                 if button_selected.text == "Map 1":
-                    # Add the file path of map 1
                     self.map_file = "map_1.csv"
-
-                    # Deselect Map2 and Map3 buttons, only keep Map 1 selected
                     if x.text == "Map 2" or x.text == "Map 3":
                         x.pressed = False
                         x.face_color = arcade.color.LIGHT_GRAY
 
                 if button_selected.text == "Map 2":
-                    # Add the file path of map 2
                     self.map_file = "map_2.csv"
-
-                    # Deselect Map1 and Map3 buttons, only keep Map 2 selected
                     if x.text == "Map 1" or x.text == "Map 3":
                         x.pressed = False
                         x.face_color = arcade.color.LIGHT_GRAY
 
                 if button_selected.text == "Map 3":
-                    # Add the file path of map 3
                     self.map_file = "map_3.csv"
-
-                    # Deselect Map1 and Map2 buttons, only keep Map 2 selected
                     if x.text == "Map 1" or x.text == "Map 2":
                         x.pressed = False
                         x.face_color = arcade.color.LIGHT_GRAY
 
                 if button_selected.text == "AI":
-                    # Set the player to be the AI
                     self.ai_mode = True
-
-                    # Deselect user button
                     if x.text == "User":
                         x.pressed = False
                         x.face_color = arcade.color.LIGHT_GRAY
 
                 if button_selected.text == "User":
-                    # set the player to be the user
                     self.ai_mode = False
-
-                    # Deselect the AI
                     if x.text == "AI":
                         x.pressed = False
                         x.face_color = arcade.color.LIGHT_GRAY
 
     def draw_main_menu(self):
-        # Draw main menu screen.
         arcade.draw_texture_rectangle(Settings.SCREEN_WIDTH / 2, Settings.SCREEN_HEIGHT / 2, Settings.SCREEN_WIDTH, Settings.SCREEN_HEIGHT, self.background)
 
     def on_draw(self):
@@ -135,7 +104,6 @@ class MyGame(arcade.Window):
             self.map.block_list.draw()
             self.map.player_list.draw()
 
-
             output = f"Row: {self.map.player.row}\nCol: {self.map.player.col}"
             arcade.draw_text(output, self.view_left + 10, self.view_bottom + 20, arcade.color.WHITE, 14)
 
@@ -145,10 +113,8 @@ class MyGame(arcade.Window):
             output = f"Press ESC to quit"
             arcade.draw_text(output, self.view_left + 10, self.view_bottom + 550, arcade.color.BLACK, 14)
 
-
         elif self.state == "menu":
             self.draw_main_menu()
-            # Draw the buttons
             for button in self.button_list:
                 button.draw()
         
@@ -197,35 +163,29 @@ class MyGame(arcade.Window):
             if self.ai_mode is True:
                 self.map.player.update_ai(delta_time)
 
-            # --- Manage Scrolling ---
-            # Track if we need to change the view port
+            # --- Scroll management stuff ---
             changed = False
 
-            # Scroll left
             left_bndry = self.view_left + Settings.VIEWPORT_MARGIN
             if self.map.player.left < left_bndry:
                 self.view_left -= left_bndry - self.map.player.left
                 changed = True
 
-            # Scroll right
             right_bndry = self.view_left + Settings.SCREEN_WIDTH - Settings.RIGHT_MARGIN
             if self.map.player.right > right_bndry:
                 self.view_left += self.map.player.right - right_bndry
                 changed = True
 
-            # Scroll up
             top_bndry = self.view_bottom + Settings.SCREEN_HEIGHT - Settings.VIEWPORT_MARGIN
             if self.map.player.top > top_bndry:
                 self.view_bottom += self.map.player.top - top_bndry
                 changed = True
 
-            # Scroll down
             bottom_bndry = self.view_bottom + Settings.VIEWPORT_MARGIN
             if self.map.player.bottom < bottom_bndry:
                 self.view_bottom -= bottom_bndry - self.map.player.bottom
                 changed = True
 
-            # If we need to scroll, go ahead and do it.
             if changed:
                 arcade.set_viewport(self.view_left, Settings.SCREEN_WIDTH + self.view_left, self.view_bottom, Settings.SCREEN_HEIGHT + self.view_bottom)
 

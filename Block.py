@@ -11,6 +11,11 @@ class Block(arcade.Sprite):
         self.col = col
         self.block_type = block_type
 
+        # A* stuff
+        self.cost = 0
+        self.depth = 0
+        self.parent = None
+
     def __str__(self):
         return str(self.row) + ", " + str(self.col) + ": " + self.block_type
 
