@@ -33,7 +33,7 @@ class AStarPlayer(arcade.Sprite):
 
         while len(self.open) > 0:
             self.open.sort(key=lambda x: x.f)   # Bring node with lowest f to the front
-            current_node = open[0]
+            current_node = self.open[0]
 
             self.open.pop(0)
             self.closed.append(current_node)
