@@ -28,42 +28,18 @@ class AStarPlayer(arcade.Sprite):
         self.generate_instruction_list()
 
     def generate_instruction_list(self):
-        start_block = self.map.map_grid[self.row][self.col]
-        self.open.append(start_block)
+        start_node = self.map.map_grid[self.row][self.col]
+        self.open.append(start_node)
 
-        max_depth = 0
-        max_search_distance = 5
-
-        while len(self.open) > 0 and max_depth < max_search_distance:
+        while len(self.open) > 0:
+            self.open.sort(key=lambda x: x.f)   # Bring node with lowest f to the front
             current_node = open[0]
 
-            if current_node == self.map.map_grid[self.row][self.col]:
-                break
-
-            self.open.remove(current_node)
+            self.open.pop(0)
             self.closed.append(current_node)
 
-            # Loop around all neighbors of current node to consider their costs
-            for i in range(-1, 1):
-                for j in range(-1, 1):
-
-                    if i == 0 or j == 0:
-                        continue
-
-                    rp = i + current_node.row
-                    cp = j + current_node.col
-
-                    neighbor_block = self.map.get_block(rp, cp)
-                    if neighbor_block is not None:
-                        # If this block is in the closed list or can't be moved through, ignore it
-                        if neighbor_block in self.closed:
-                            continue
-                        if neighbor_block.block_type is not "air" and neighbor_block.block_type is not "gold_nugget" and neighbor_block.block_type is not "stone_gold":
-                            continue
-
-                        g = start_block.cost + neighbor_block.cost
-                        # h =
-                        self.path_finder_visited.append([rp, cp])
+            # Loop around all neighbors of current node to consider their costs (f value)
+            pass
 
     def update_ai(self, delta_time):
         self.move_timer -= delta_time
