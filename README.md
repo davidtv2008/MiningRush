@@ -16,7 +16,8 @@ Michael Perez
   * [Character Sprite](https://kenney.nl/assets/platformer-characters-1)
 
 ## Important Files
-- Main - Main file
+- Main 
+  - Main file that runs the game
 - Block
 - ArtificialPlayer
 - Map
@@ -25,9 +26,9 @@ Michael Perez
 - Settings 
   - Simple configuration file tha adjusts pixel size, window size, etc
 
-# Getting Started
+## Getting Started
 
-## Installing on Windows Machine
+### Installing on Windows Machine
 
 ### 1. Install Python from the official [Python website](https://www.python.org/downloads/)
     
@@ -83,7 +84,7 @@ Run the Main.py file.
   Terminal". (Group was occasionally having issues with the play 
   button). 
 
-## Installing on Linux Machine
+### Installing on Linux Machine
 
 ### 1. The Arcade library is 3.6+ only. 
 
