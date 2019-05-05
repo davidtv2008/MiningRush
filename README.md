@@ -18,10 +18,23 @@ Michael Perez
 ## Important Files
 - Main 
   - Main file that runs the game
+  - Initializes all Arcade elements, including the window and game loop
+  - Handles all user inputs
+  - Draws all game elements to the screen
 - Block
+  - Block tile object used during gameplay
+  - Contains information about the row/column it's at, as well as what kind of block it is
+  - AI uses this info to determine where it wants to go
 - ArtificialPlayer
+  - AI player object that plays through the level on its own
+  - Uses BFS to determine where its next goal is
+  - Can perform three moves: move left, move right, and dig down
 - Map
+  - Object that contains 2D array of Block objects that constitutes a level
+  - Generated from CSV files, containing integer values depicting what type of block the coordinate is
 - Player
+  - Player object that can receive inputs to play through a level manually
+  - Can perform three moves: move left, move right, and dig down
 - Options
 - Settings 
   - Simple configuration file tha adjusts pixel size, window size, etc
@@ -45,7 +58,7 @@ Michael Perez
   On the next screen, click the check box that says `Install python 
   for all users`. 
 
-### 2. Install The Acade Library
+### 2. Install The Arcade Library
 
   Click the Window button on the lower left of the screen (or hit
   the window button on your keyboard) and type `command prompt`
@@ -57,8 +70,8 @@ Michael Perez
 
 ### 3. Install a Development Environment
 
-  - **Pycharm**
-  - **Sublime** (anaconda is a greate sublime plug-in for Python
+  - **PyCharm**
+  - **Sublime** (anaconda is a great sublime plug-in for Python
     development)
   - **Visual Studio Code** (What we used)
       - To get Visual code to run python, install the following 
