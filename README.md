@@ -1,9 +1,103 @@
-# MiningRush
-Mining Rush AI Project
+# MiningRush AI Project
+
 
 Authors:
-
 Erine Estrella
 David Toledo
 Walid Elmir
 Michael Perez
+
+
+ # Instructions for use
+
+## Windows Machine
+
+  1. Install Python from the official Python website:
+    
+    https://www.python.org/downloads/
+    
+    You have the option to download two different versions: 
+    Version 3.x.x or version 2.x.x. The Arcade library requires 
+    Python beginning with 3.x.x.
+
+    When installing Python, make sure to click the check box
+    that says `Add Python 3.x to PATH` and choose the Customize 
+    installation option. 
+
+    The defaults on the next screen are fine. 
+
+    On the next screen, click the check box that says `Install python 
+    for all users`. 
+
+  2. Install The Acade Library
+
+    Click the Window button on the lower left of the screen (or hit
+    the window button on your keyboard) and type `command prompt` 
+    to search for the command prompt application. 
+
+    Right click on the command prompt app and **run it as Administrator**. 
+
+    Next, in the command prompt, type `pip install arcade`.
+
+  3. Install a Development Environment
+
+    - **Pycharm**
+    - **Sublime** (anaconda is a greate sublime plug-in for Python
+      development)
+    - **Visual Studio Code** (What we used)
+        - To get Visual code to run python, install the following 
+          extensions: 
+            - Code Runner
+            - Python 
+            - Python Extension pack
+            - Python for VSCode
+    
+    4. Running the Game
+
+        Open the MiningRush project inside the IDE. 
+
+        Run the Main.py file. 
+
+        # If using Visual Studio Code
+
+        After installing the code runner extension, there should be a play 
+        button located at the top right side of the screen. If that doesn't 
+        work, do the following:
+
+      - Within the Main.py file, right click. Select "Run Python File in 
+        Terminal". (Group was occasionally having issues with the play 
+        button). 
+
+## Linux Machine
+
+  1. The Arcade library is 3.6+ only. 
+  
+    You'll need to install Python 3 and use it instead of the built-in Python 2.x. 
+    Usually on Linux and Mac, you can type `python3` instead of `python` once 
+    installed. Same with `pip3` instead of `pip` to install packages to Python 3.x.
+
+    Install Python 3 and some image dependencies: 
+
+      `apt update && sudo apt install -y python3-dev python3-pip libjpeg-dev 
+      zlib1g-dev python-gst-1.0`
+
+     Check that you have at least Python 3.6 with: 
+
+      `python3 -V`
+    
+    If not the correct version, use the following [link] (https://tecadmin.net/install-python-3-6-ubuntu-linuxmint/).
+
+
+================================================================================================
+
+If there are any issues with installation, check the official Arcade website for further 
+instructions. 
+
+[Instructions reference] (http://arcade.academy/installation.html)
+
+
+    
+
+
+
+
