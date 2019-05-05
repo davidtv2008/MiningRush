@@ -105,7 +105,7 @@ Run the Main.py file.
 
 ## Further help 
 
-If there are any issues with installation, check the official Arcade website for further 
+If there are any issues with installation, check the official [Arcade website](http://arcade.academy) for further 
 instructions. 
 
 ## References
