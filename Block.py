@@ -12,7 +12,13 @@ class Block(arcade.Sprite):
         self.block_type = block_type
 
         # A* stuff
-        self.cost = 0
+        if block_type == "air":
+            self.cost = 3
+        elif block_type == "gold_nugget":
+            self.cost = 2
+        elif block_type == "stone_gold":
+            self.cost = 1
+
         self.depth = 0
         self.parent = None
 
