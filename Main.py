@@ -25,6 +25,7 @@ class MyGame(arcade.Window):
 
         self.button_list = []
         self.map_file = "map_1.csv"
+        self.background_file = "map_1_background.csv"
         self.ai_mode = False
 
         # create our 3 options to select what map to load
