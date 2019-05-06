@@ -3,6 +3,7 @@ import os
 import Settings
 import Map
 import Options
+import Background
 
 
 """
@@ -47,20 +48,23 @@ class MyGame(arcade.Window):
         self.button_list.append(ai_button)
     
         # Set the background color
-        arcade.set_background_color(arcade.color.AMAZON)
+        arcade.set_background_color(arcade.color.DARK_SLATE_GRAY)
         self.background = arcade.load_texture("graphics/menuBackground.png")
         self.state = "menu"
 
         # Map stuff
         self.map = None
+        self.map_background = None
         self.view_left = 0
         self.view_bottom = 0
 
     def setup(self):
         self.map = Map.Map(self)
+        self.map_background = Background.Background(self)
+
 
         # Set the background color
-        arcade.set_background_color(arcade.color.AMAZON)
+        arcade.set_background_color(arcade.color.DARK_SLATE_GRAY)
         # Set the view port boundaries
         # These numbers set where we have 'scrolled' to.
         self.view_left = 0
@@ -80,6 +84,7 @@ class MyGame(arcade.Window):
                 if button_selected.text == "Map 1":
                     # Add the file path of map 1
                     self.map_file = "map_1.csv"
+                    self.background_file = "map_1_background.csv"
 
                     # Deselect Map2 and Map3 buttons, only keep Map 1 selected
                     if x.text == "Map 2" or x.text == "Map 3":
@@ -89,6 +94,7 @@ class MyGame(arcade.Window):
                 if button_selected.text == "Map 2":
                     # Add the file path of map 2
                     self.map_file = "map_2.csv"
+                    self.background_file = "map_2_background.csv"
 
                     # Deselect Map1 and Map3 buttons, only keep Map 2 selected
                     if x.text == "Map 1" or x.text == "Map 3":
@@ -98,6 +104,7 @@ class MyGame(arcade.Window):
                 if button_selected.text == "Map 3":
                     # Add the file path of map 3
                     self.map_file = "map_3.csv"
+                    self.background_file = "map_3_background.csv"
 
                     # Deselect Map1 and Map2 buttons, only keep Map 2 selected
                     if x.text == "Map 1" or x.text == "Map 2":
@@ -132,6 +139,7 @@ class MyGame(arcade.Window):
 
         # Draw all the sprites.
         if self.state == "game":
+            self.map_background.block_list.draw()
             self.map.block_list.draw()
             self.map.player_list.draw()
 
