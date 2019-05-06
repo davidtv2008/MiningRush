@@ -29,12 +29,16 @@ Michael Perez
   - AI player object that plays through the level on its own
   - Uses BFS to determine where its next goal is
   - Can perform three moves: move left, move right, and dig down
-- Map
-  - Object that contains 2D array of Block objects that constitutes a level
-  - Generated from CSV files, containing integer values depicting what type of block the coordinate is
 - Player
   - Player object that can receive inputs to play through a level manually
   - Can perform three moves: move left, move right, and dig down
+- Map
+  - Object that contains 2D array of Block objects that constitutes a level
+  - Generated from CSV files, containing integer values depicting what type of block the coordinate is
+- Background
+  - Similarly to the Map file, the object that constains a 2D array of Block objects 
+  - Sole purpose is to create a map that serves as the background of the current level
+  - Generated from CSV files with integer values that represent what type of tile the coordinate is
 - Options
 - Settings 
   - Simple configuration file tha adjusts pixel size, window size, etc
