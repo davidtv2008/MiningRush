@@ -40,6 +40,9 @@ Michael Perez
   - Sole purpose is to create a map that serves as the background of the current level
   - Generated from CSV files with integer values that represent what type of tile the coordinate is
 - Options
+  - Defines click text buttons: AI, User, Map1, Map2, Map3
+  - Color change indicates buttons being selected
+  - Each button specifies how game is played: user controller or Ai controller, along with level map.
 - Settings 
   - Simple configuration file tha adjusts pixel size, window size, etc
 
