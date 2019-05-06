@@ -28,8 +28,8 @@ class ArtificialPlayer(arcade.Sprite):
         end = None
 
         if self.map.map_file_name == "map_3.csv":
-            start = [1, 1]
-            end = [17, 9]
+            start = [4, 2]
+            end = [20, 9]
         if self.map.map_file_name == "map_2.csv":
             start = [1, 1]
             end = [13, 5]
@@ -48,7 +48,7 @@ class ArtificialPlayer(arcade.Sprite):
             if self.map_array[self.row+1][self.col] == 35:
                 self.dig_down()
                 return
-
+            
             if len(self.instruction_list) > 0:
                 instruction1 = self.instruction_list[len(self.instruction_list) - 1]
                 instruction2 = self.instruction_list[len(self.instruction_list) - 2]
